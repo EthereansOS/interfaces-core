@@ -14,8 +14,6 @@ The plugin system manages two kinds of data: **plugins** and **placeholders**.
 
 Placeholders hold an ordered list of items grouped by name. For example, you can have a set of "menu" items, a set of "router" items, etc.
 
-(TODO: SPIEGARE ANCHE I PLUGINS O LI TOGLIAMO?)
-
 The exported objects are:
 
 - `PluginsContextProvider` context provider for the plugin system
@@ -168,3 +166,28 @@ npm run build:dev
 ```
 
 to build and keep watching for changes.
+
+## Development with `Interfaces-Framework`
+
+To use `interfaces-core` for development (so using a checkod-out version isnstead of the `npm` dependencies) some steps must be followed.
+Assuming that we have cloned the apps repo [Interfaces-Framework](https://github.com/EthereansOS/Interfaces-Framework) in the same folder where we cloned this repo, we need to:
+	- `npm install`
+	- `npm link ../Interfaces-Framework/node_modules/react`
+	- `npm build`
+	- `npm link`
+
+The first `npm link` links the `react` used by `Interfaces-Framework` to avoid [this problem](https://reactjs.org/warnings/invalid-hook-call-warning.html#duplicate-react).
+
+Then, in `Interface-Framework`, for each packages/*:
+  - `run: npm link @ethereansos/interfaces-core`
+	- Remove `package-lock.js`
+  - Execute `npm install` in `Interfaces-Framework`
+
+Be sure that `Interfaces-Framework` uses the new dependencies and not `@dfohub/core`. If not, change the import. In linux this can done with:
+```
+find . -type f -exec sed -i 's#@dfohub/core#@ethereansos/interfaces-core#g' {} +
+````
+
+### Known issues
+When an app using `interfaces-core` is started locally for development, set `FAST_REFRESH=false`, e.g.: `FAST_REFRESH=false npm start`
+This because of an unsolved problem that we have with react-refresh dependency (which is an indirect dependency of `create-react-app`)
