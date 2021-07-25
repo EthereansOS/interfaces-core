@@ -1,4 +1,4 @@
-import { getSolidityUtilities, getSupportedSolidityVersion } from '@dfohub/core'
+import { getSolidityUtilities, getSupportedSolidityVersion } from '.'
 
 async function generateAndCompileContract(
   sourceCode,
