@@ -86,5 +86,19 @@
       "!**/node_modules/**",
       "!**/vendor/**"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run lint",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "post-merge": "npm i"
+    }
+  },
+  "lint-staged": {
+    "packages/**/src/**/*.{js,json,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
+
 }
