@@ -1,4 +1,4 @@
-# DFOhub core package
+# EthOS core package
 
 This package includes some core features used by the EtheranOS apps, like the plugin system and the integration with Ethereum.
 
