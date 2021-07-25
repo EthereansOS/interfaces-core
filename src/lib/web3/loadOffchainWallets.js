@@ -1,5 +1,6 @@
-import { formatString } from '@dfohub/core'
 import web3Utils from 'web3-utils'
+
+import formatString from '../formatString'
 
 import getNetworkElement from './getNetworkElement'
 import formatLink from './formatLink'

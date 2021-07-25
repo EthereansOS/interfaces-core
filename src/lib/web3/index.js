@@ -28,5 +28,6 @@ export { default as mint } from './mint'
 export { default as split } from './split'
 export { default as toSubArrays } from './toSubArrays'
 export { default as uploadToIPFS } from './uploadToIPFS'
+export { default as loadOffChainWallets } from './loadOffchainWallets'
 
 export * from './contracts'
