@@ -1,4 +1,5 @@
-import { getSolidityUtilities, getSupportedSolidityVersion } from '.'
+import getSolidityUtilities from './getSolidityUtilities'
+import getSupportedSolidityVersion from './getSupportedSolidityVersion'
 
 async function generateAndCompileContract(
   sourceCode,
