@@ -171,7 +171,12 @@ to build and keep watching for changes.
 
 To use `interfaces-core` for development (so using a checked-out version instead of the `npm` dependencies) some steps must be followed.
 
-Assuming that we have cloned [Interfaces-Framework](https://github.com/EthereansOS/Interfaces-Framework) in the same folder where we cloned this repo, we need to: - `npm install` - `npm link ../Interfaces-Framework/node_modules/react` - `npm build` - `npm link`
+Assuming that we have cloned [Interfaces-Framework](https://github.com/EthereansOS/Interfaces-Framework) in the same folder where we cloned this repo, we need to:
+
+- `npm install`
+- `npm link ../Interfaces-Framework/node_modules/react`
+- `npm build`
+- `npm link`
 
 The first `npm link` links the `react` used by `Interfaces-Framework` to avoid [this problem](https://reactjs.org/warnings/invalid-hook-call-warning.html#duplicate-react).
 
