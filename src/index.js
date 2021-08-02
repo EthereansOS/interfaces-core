@@ -1,6 +1,7 @@
 export * from './context/GlobalContexts'
 export * from './hooks/usePlugins'
 export * from './hooks/usePrevious'
+export * from './hooks/useLocalStorage'
 export * from './hooks/useIsUnmounted'
 export * from './hooks/useLoadUniswapPairs'
 export * from './hooks/useInit'
