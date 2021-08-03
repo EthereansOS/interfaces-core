@@ -6,14 +6,15 @@ import loadBlockSearchTranches from '../lib/web3/loadBlockSearchTranches'
 import getLogs from '../lib/web3/getLogs'
 import loadTokenInfos from '../lib/web3/loadTokenInfos'
 import { VOID_ETHEREUM_ADDRESS_EXTENDED } from '../lib/constants'
+import { useWeb3 } from '../context/Web3Context'
+import useEthosContext from '../hooks/useEthosContext'
 
 import { useIsUnmounted } from './useIsUnmounted'
 
-export function useLoadUniswapPairs(
-  { web3, context, networkId, web3ForLogs },
-  address,
-  secondToken
-) {
+export function useLoadUniswapPairs(address, secondToken) {
+  const { networkId, web3, web3ForLogs } = useWeb3()
+  const context = useEthosContext()
+
   const [uniswapPairs, setUniswapPairs] = useState([])
   const unmounted = useIsUnmounted()
 
