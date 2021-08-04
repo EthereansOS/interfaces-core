@@ -132,10 +132,10 @@ export function useLoadUniswapPairs(address, secondToken) {
               pairToken.key = `${token0}_${token1}-${token1}_${token0}`
               pairToken.fromBlock = log.blockNumber + ''
               pairToken.isUniswapPair = true
-
-              setUniswapPairs((pairs) => [...pairs, pairToken])
               pairToken.symbol =
                 pairToken.token0.symbol + '/' + pairToken.token1.symbol
+
+              setUniswapPairs((pairs) => [...pairs, pairToken])
             } catch (e) {
               console.log('loadUniswapPairs inner error', e)
             }
