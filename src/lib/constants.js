@@ -12,3 +12,8 @@ export const URL_REGEXP = new RegExp(
   '(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$',
   'gs'
 )
+export const solidityImportRule = new RegExp('import( )+"(\\d+)"( )*;', 'gs')
+export const pragmaSolidityRule = new RegExp(
+  'pragma( )+solidity( )*(\\^|>)\\d+.\\d+.\\d+;',
+  'gs'
+)
