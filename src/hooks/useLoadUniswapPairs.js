@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import web3Utils from 'web3-utils'
 
-import toSubArrays from '../lib/web3/toSubArrays'
+import toSubArrays from '../lib/utils/toSubArrays'
 import loadBlockSearchTranches from '../lib/web3/loadBlockSearchTranches'
 import getLogs from '../lib/web3/getLogs'
 import loadTokenInfos from '../lib/web3/loadTokenInfos'

@@ -5,6 +5,12 @@ import createWeb3 from './createWeb3'
 import getNetworkElement from './getNetworkElement'
 import blockchainCall from './blockchainCall'
 
+/**
+ * Initialize the connection
+ * @param environment
+ * @param onUpdate
+ * @return {Promise<void|{uniswapV2Factory: *, walletAvatar: string | string, web3ForLogs: *, uniswapV2Router: *, wethAddress: *, web3: {currentProvider}, networkId: *, walletAddress: *, proxyChangedTopic: *}>}
+ */
 async function initConnection(environment, onUpdate) {
   const { context } = environment
   let networkId = environment.networkId

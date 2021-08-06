@@ -13,7 +13,11 @@
     "build": "rollup -c",
     "build:dev": "rollup -c --watch",
     "lint": "eslint src",
-    "lint:fix": "eslint --fix src"
+    "lint:fix": "eslint --fix src",
+    "docs:api:math": "jsdoc2md src/lib/math/*.js > docs/api-math.md",
+    "docs:api:utils": "jsdoc2md src/lib/utils/*.js > docs/api-utils.md",
+    "docs:api:web3": "jsdoc2md src/lib/web3/*.js > docs/api-web3.md",
+    "docs:api": "npm run docs:api:math && npm run docs:api:utils && npm run docs:api:web3"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +25,7 @@
   "dependencies": {
     "eth-ens-namehash": "^2.0.8",
     "ethereum-blockies-base64": "^1.0.2",
+    "jsdoc-to-markdown": "7.0.1",
     "pubsub-js": "1.9.3",
     "regenerator-runtime": "^0.13.7"
   },

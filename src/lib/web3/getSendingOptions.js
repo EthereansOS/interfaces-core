@@ -1,32 +1,38 @@
 import { getAddress } from './getAddress'
 
+/**
+ * Get sending options
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param transaction
+ * @param value
+ * @return {Promise<unknown>}
+ */
 function getSendingOptions({ web3 }, transaction, value) {
   return new Promise(async function (resolve, reject) {
     let walletAddress
+    const lastGasLimit = (await web3.eth.getBlock('latest')).gasLimit
     if (transaction) {
       walletAddress = await getAddress({ web3 })
       const from = walletAddress
       const nonce = await web3.eth.getTransactionCount(from)
-      // TODO I can't find the code that sets window.bypassEstimation in the production code, so I guess is always undefined
-      // return window.bypassEstimation
-      return undefined
+      // window.bypassEstimation is a value that can be set in the console to debug the prodct in production
+      return window.bypassEstimation
         ? resolve({
             nonce,
             from,
-            // TODO I can't find the code that sets window.gasLimit in the production code, so I guess is always undefined
-            // gas: window.gasLimit || '7900000',
-            gas: '7900000',
+            // window.gasLimit is a value that can be set in the console to debug the prodct in production
+            gas: window.gasLimit || lastGasLimit,
             value,
-            walletAddress,
           })
         : transaction.estimateGas(
             {
               nonce,
               from,
-              gasPrice: web3.utils.toWei('13', 'gwei'),
               value,
-              gas: '7900000',
-              gasLimit: '7900000',
+              gas: lastGasLimit,
+              gasLimit: lastGasLimit,
             },
             function (error, gas) {
               if (error) {
@@ -36,20 +42,15 @@ function getSendingOptions({ web3 }, transaction, value) {
                 nonce,
                 from,
                 // TODO I can't find the code that sets window.gasLimit in the production code, so I guess is always undefined
-                // gas: gas || window.gasLimit || '7900000',
-                gas: gas || '7900000',
+                gas: gas || window.gasLimit || lastGasLimit,
                 value,
-                walletAddress,
               })
             }
           )
     }
     return resolve({
       from: walletAddress || null,
-      // TODO I can't find the code that sets window.gasLimit in the production code, so I guess is always undefined
-      // gas: window.gasLimit || '99999999',
-      gas: '99999999',
-      walletAddress,
+      gas: window.gasLimit || lastGasLimit,
     })
   })
 }

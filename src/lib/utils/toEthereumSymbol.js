@@ -28,6 +28,11 @@ const symbols = {
   tether: '1000000000000000000000000000000',
 }
 
+/**
+ * To Ethereum symbol
+ * @param decimals
+ * @return {*}
+ */
 function toEthereumSymbol(decimals) {
   const d = '1' + new Array(decimals + 1).join('0')
   return (Object.entries(symbols).find(([key, value]) => value === d) || [])[0]

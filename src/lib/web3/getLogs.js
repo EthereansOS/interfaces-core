@@ -1,11 +1,23 @@
 import getNetworkElement from './getNetworkElement'
 
+/**
+ * Get logs
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {web3} adapters.web3ForLogs - The web3 for log instancee.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {string} adapters.networkId - The network id.
+ * @param element
+ * @param endOnFirstResult
+ * @return {Promise<*>}
+ */
 const getLogs = async function (
   { web3, web3ForLogs, context, networkId },
-  a,
+  element,
   endOnFirstResult
 ) {
-  const args = JSON.parse(JSON.stringify(a))
+  const args = JSON.parse(JSON.stringify(element))
   const logs = []
   args.fromBlock =
     args.fromBlock ||

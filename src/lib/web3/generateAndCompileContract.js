@@ -1,6 +1,16 @@
 import getSolidityUtilities from './getSolidityUtilities'
 import getSupportedSolidityVersion from './getSupportedSolidityVersion'
 
+/**
+ * Generate and compile a contract
+ * @param sourceCode
+ * @param lines
+ * @param descriptions
+ * @param updates
+ * @param prefixedLines
+ * @param postFixedLines
+ * @return {Promise<{sourceCode, selectedContract: *}>}
+ */
 async function generateAndCompileContract(
   sourceCode,
   lines,

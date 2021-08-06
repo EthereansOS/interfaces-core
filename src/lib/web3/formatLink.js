@@ -1,3 +1,11 @@
+/**
+ * Format link
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param link
+ * @return {string|*|string}
+ */
 function formatLink({ context }, link) {
   // If it;s an array, just consider the first element
   link = link ? (link instanceof Array ? link[0] : link) : ''

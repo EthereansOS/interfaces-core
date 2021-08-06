@@ -1,3 +1,10 @@
+/**
+ * Shorten word
+ * @param context
+ * @param word
+ * @param charsAmount
+ * @return {string|string}
+ */
 function shortenWord({ context }, word, charsAmount) {
   return word
     ? word.substring(

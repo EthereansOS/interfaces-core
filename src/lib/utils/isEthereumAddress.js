@@ -1,5 +1,10 @@
 import web3Utils from 'web3-utils'
 
+/**
+ * Check if is an ethereum address
+ * @param ad
+ * @return {boolean}
+ */
 function isEthereumAddress(ad) {
   if (ad === undefined || ad === null) {
     return false

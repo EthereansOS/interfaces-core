@@ -1,3 +1,8 @@
+/**
+ * String to lines
+ * @param str
+ * @return string[]
+ */
 export default function toLines(str) {
   var realSplit = str.trim().split('\n')
   var split = []

@@ -1,6 +1,6 @@
 import web3Utils from 'web3-utils'
 
-import formatString from '../formatString'
+import formatString from '../utils/formatString'
 
 import getNetworkElement from './getNetworkElement'
 import formatLink from './formatLink'
@@ -28,6 +28,15 @@ async function loadLogoWork({ context }, token) {
   token.logo = token.logoURI
 }
 
+/**
+ * Load Off Chain wallets
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {string} adapters.networkId - The network id.
+ * @return {Promise<{'Programmable Equities': T[], Items: T[], Indexes: T[], Tokens: T[]}>}
+ */
 async function loadOffChainWallets({ web3, context, networkId }) {
   if (context.bypassTokens) {
     return

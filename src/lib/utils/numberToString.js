@@ -1,3 +1,9 @@
+/**
+ * Number to string
+ * @param num
+ * @param locale
+ * @return {string|number}
+ */
 function numberToString(num, locale) {
   if (locale) {
     throw new Error('Locale not supported')

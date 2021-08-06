@@ -3,6 +3,16 @@ import web3Utils from 'web3-utils'
 import { newContract } from './contracts'
 import blockchainCall from './blockchainCall'
 
+/**
+ * Load token infos
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param addresses
+ * @param wethAddress
+ * @return {Promise<string[]> | Promise<string>}
+ */
 async function loadTokenInfos({ web3, context }, addresses, wethAddress) {
   let loadedTokens = {}
   wethAddress =

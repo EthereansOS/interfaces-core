@@ -1,16 +1,31 @@
 import web3Utils from 'web3-utils'
 
 import { VOID_ETHEREUM_ADDRESS } from '../constants'
-import shortenWord from '../shortenWords'
-import stringToLines from '../stringToLines'
+import shortenWord from '../utils/shortenWords'
+import stringToLines from '../utils/stringToLines'
+import toDecimals from '../utils/toDecimals'
+import formatMoney from '../utils/formatMoney'
 
 import blockchainCall from './blockchainCall'
 import sendGeneratedProposal from './sendGeneratedProposal'
-import toDecimals from './toDecimals'
-import formatMoney from './formatMoney'
 import { newContract } from './contracts'
 import loadTokenInfos from './loadTokenInfos'
 
+/**
+ * Transfer
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {wethAddress} adapters.wethAddress - The wethAddress.
+ * @param organization
+ * @param tokenAddress
+ * @param amounts
+ * @param sendTos
+ * @param tokenId
+ * @param payload
+ * @return {Promise}
+ */
 async function transfer(
   { web3, context, wethAddress },
   organization,
@@ -74,7 +89,7 @@ async function transfer(
   var symbol = 'ETH'
   try {
     tokenAddress &&
-      tokenAddress != VOID_ETHEREUM_ADDRESS &&
+      tokenAddress !== VOID_ETHEREUM_ADDRESS &&
       tokenAddress !== wethAddress &&
       (symbol = await blockchainCall(
         { web3, context },

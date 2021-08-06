@@ -3,6 +3,18 @@ import getNetworkElement from './getNetworkElement'
 import validateDFOMetadata from './validateDFOMetadata'
 import { createContract } from './contracts'
 
+/**
+ * Deploy metadata link
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {string} adapters.networkId - The network id.
+ * @param {IpfsHttpClient} adapters.ipfsHttpClient - The ipfsHttpClient.
+ * @param metadata
+ * @param functionalitiesManager
+ * @return {Promise<*>}
+ */
 async function deployMetadataLink(
   { web3, context, networkId, ipfsHttpClient },
   metadata,

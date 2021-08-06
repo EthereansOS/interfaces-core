@@ -1,5 +1,12 @@
 let lastEthereumPrice
 
+/**
+ * Get the ethereum price
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {EthosContext} adapters.context - The application context.
+ * @return {Promise<*>}
+ */
 const getEthereumPrice = async function getEthereumPrice({ context }) {
   if (
     lastEthereumPrice &&

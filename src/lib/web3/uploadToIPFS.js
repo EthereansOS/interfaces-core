@@ -1,3 +1,11 @@
+/**
+ * Upload to IPFS
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {IpfsHttpClient} adapters.ipfsHttpClient - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context. * @param files
+ * @return {Promise<string[]>}
+ */
 async function uploadToIPFS({ context, ipfsHttpClient }, files) {
   const single =
     !(files instanceof Array) &&

@@ -4,7 +4,13 @@ import formatMoney from './formatMoney'
 import numberToString from './numberToString'
 import toEthereumSymbol from './toEthereumSymbol'
 
-// FIXME extract the from money action to an external function
+/**
+ * From decimal
+ * @param number
+ * @param decimals
+ * @param skipFormat
+ * @return {string|*|string|string}
+ */
 function fromDecimals(number, decimals, skipFormat) {
   number = Number(!isNaN(number?.value) ? number.value : number)
   decimals = Number(!isNaN(decimals?.value) ? decimals.value : decimals)

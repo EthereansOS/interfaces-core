@@ -1,5 +1,10 @@
 import Web3 from 'web3'
 
+/**
+ * Create web3 instance
+ * @param connectionProvider
+ * @return {Promise<Web3>}
+ */
 async function createWeb3(connectionProvider) {
   const web3 = new Web3(connectionProvider)
   web3.currentProvider.setMaxListeners &&
