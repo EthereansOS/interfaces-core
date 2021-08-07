@@ -9,6 +9,7 @@ import formatLink from './formatLink'
 
 /**
  * Extract the comment from the code
+ *
  * @param {Object} adapters - The adapters injected required by the function.
  * @param {EthosContext} adapters.context - The application context.
  * @param {string} code

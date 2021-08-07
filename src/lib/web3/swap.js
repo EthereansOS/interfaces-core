@@ -1,13 +1,25 @@
 import web3Utils from 'web3-utils'
 
 import { VOID_ETHEREUM_ADDRESS } from '../constants'
-import stringToLines from '../stringToLines'
+import stringToLines from '../utils/stringToLines'
+import toDecimals from '../utils/toDecimals'
 
 import sendGeneratedProposal from './sendGeneratedProposal'
 import blockchainCall from './blockchainCall'
-import toDecimals from './toDecimals'
 import { newContract } from './contracts'
 
+/**
+ * Swap
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param organization
+ * @param amount
+ * @param from
+ * @param to
+ * @return {Promise}
+ */
 async function swap({ web3, context }, organization, amount, from, to) {
   from && (from = web3Utils.toChecksumAddress(from))
   to && (to = web3Utils.toChecksumAddress(to))

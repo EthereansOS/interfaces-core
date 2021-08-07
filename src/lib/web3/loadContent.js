@@ -5,6 +5,18 @@ import { newContract } from './contracts'
 import getNetworkElement from './getNetworkElement'
 import loadContentMetadata from './loadContentMetadata'
 
+/**
+ * Load content
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {string} adapters.networkId - The network id.
+ * @param tokenId
+ * @param ocelotAddress
+ * @param raw
+ * @return {Promise<string>}
+ */
 async function loadContent(
   { web3, context, networkId },
   tokenId,

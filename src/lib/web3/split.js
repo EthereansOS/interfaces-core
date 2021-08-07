@@ -2,6 +2,15 @@ import web3Utils from 'web3-utils'
 
 import { BASE64_REGEXP } from '../constants'
 
+/**
+ * Split
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param content
+ * @param length
+ * @return {string[]}
+ */
 function split({ context }, content, length) {
   const regex = new RegExp(BASE64_REGEXP).exec(content)
 

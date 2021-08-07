@@ -1,8 +1,23 @@
+import methodSignatureMatch from '../utils/methodSignatureMatch'
+
 import getSolidityUtilities from './getSolidityUtilities'
 import checkMandatoryFunctionalityProposalConstraints from './checkMandatoryFunctionalityProposalConstraints'
-import methodSignatureMatch from './methodSignatureMatch'
 import extractComment from './extractComment'
 
+/**
+ * Search for code errors
+ *
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param location
+ * @param code
+ * @param codeName
+ * @param methodSignature
+ * @param replaces
+ * @param noCode
+ * @return {Promise<array>}
+ */
 async function searchForCodeErrors(
   { context },
   location,

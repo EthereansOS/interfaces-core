@@ -1,5 +1,18 @@
 import generateAndCompileContract from './generateAndCompileContract'
 
+/**
+ * Send generated proposal
+ *
+ * @param element
+ * @param ctx
+ * @param template
+ * @param lines
+ * @param descriptions
+ * @param updates
+ * @param prefixedLines
+ * @param postFixedLines
+ * @return {Object}
+ */
 function sendGeneratedProposal(
   element,
   ctx,
@@ -43,11 +56,7 @@ function sendGeneratedProposal(
       },
     ],
   }
-  const newCtx = ctx || {}
-  // TODO is this neccessary?
-  Object.keys(newCtx).map((key) => (initialContext[key] = newCtx[key]))
-
-  return initialContext
+  return { ...initialContext, ...ctx }
 }
 
 export default sendGeneratedProposal

@@ -1,5 +1,14 @@
 import extractComment from './extractComment'
 
+/**
+ * Extract html descriptions
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param code
+ * @param updateFirst
+ * @return {string}
+ */
 function extractHTMLDescription({ context }, code, updateFirst) {
   if (!code) {
     return ''

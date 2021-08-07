@@ -1,9 +1,25 @@
+import fromDecimals from '../utils/fromDecimals'
+import toDecimals from '../utils/toDecimals'
+import formatMoney from '../utils/formatMoney'
+
 import getEthereumPrice from './getEthereumPrice'
 import blockchainCall from './blockchainCall'
-import toDecimals from './toDecimals'
-import formatMoney from './formatMoney'
-import fromDecimals from './fromDecimals'
 
+/**
+ * Refresh balances
+ *
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {string} adapters.networkId - The network id.
+ * @param {dfoHub} adapters.dfoHub - The DFOHub object.
+ * @param {uniswapV2Router} adapters.uniswapV2Router - The uniswapV2Router
+ * @param {walletAddress} adapters.walletAddress - The Wallet address
+ * @param element
+ * @param silent
+ * @return {Promise<void>}
+ */
 async function refreshBalances(
   { web3, context, dfoHub, uniswapV2Router, wethAddress, walletAddress },
   element,

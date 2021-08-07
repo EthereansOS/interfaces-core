@@ -1,6 +1,16 @@
 import blockchainCall from './blockchainCall'
 import { newContract } from './contracts'
 
+/**
+ * Get next functionality version
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param codeName
+ * @param replaces
+ * @return {Promise<number>}
+ */
 async function getNextFunctionalityVersion(
   { web3, context },
   data,

@@ -1,6 +1,16 @@
-import numberToString from './numberToString'
+import numberToString from '../utils/numberToString'
+
 import getNetworkElement from './getNetworkElement'
 
+/**
+ * Load block search trances
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {string} adapters.networkId - The network id.
+ * @return {Promise<Array>}
+ */
 async function loadBlockSearchTranches({ web3, context, networkId }) {
   var startBlock = parseInt(
     numberToString(

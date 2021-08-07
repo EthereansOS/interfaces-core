@@ -1,17 +1,13 @@
-// TODO verify if this function is used somewhereelse
-function eliminateFloatingFinalZeroes(value, decSeparator) {
-  decSeparator = decSeparator || '.'
-  if (value.indexOf(decSeparator) === -1) {
-    return value
-  }
-  let split = value.split(decSeparator)
-  while (split[1].endsWith('0')) {
-    split[1] = split[1].substring(0, split[1].length - 1)
-  }
-  return split[1].length === 0 ? split[0] : split.join(decSeparator)
-}
+import eliminateFloatingFinalZeroes from './eliminateFloatingFinalZeroes'
 
-// TODO test and refactor this function
+/**
+ * Format money
+ * @param value
+ * @param decPlaces
+ * @param thouSeparator
+ * @param decSeparator
+ * @return {*}
+ */
 function formatMoney(value, decPlaces, thouSeparator, decSeparator) {
   value = (typeof value).toLowerCase() !== 'number' ? parseFloat(value) : value
   let n = value

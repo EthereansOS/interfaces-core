@@ -5,6 +5,22 @@ import getNetworkElement from './getNetworkElement'
 import blockchainCall from './blockchainCall'
 import split from './split'
 
+/**
+ * Mint
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {web3} adapters.web3 - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context.
+ * @param {string} adapters.networkId - The network id.
+ * @param {ethosEvents} adapters.ethosEvents - The pub sub event manager.
+ * @param inputs
+ * @param ocelotAddress
+ * @param silent
+ * @param firstChunkCallback
+ * @param tokenId
+ * @param start
+ * @return {Promise<*>}
+ */
 async function mint(
   { web3, context, networkId, ethosEvents },
   inputs,

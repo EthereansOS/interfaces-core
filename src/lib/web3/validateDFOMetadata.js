@@ -1,7 +1,18 @@
-import { uploadToIPFS, URL_REGEXP } from '@ethereansos/interfaces-core'
+import { URL_REGEXP } from '../constants'
+import checkCoverSize from '../utils/checkCoverSize'
 
-import checkCoverSize from './checkCoverSize'
+import uploadToIPFS from './uploadToIPFS'
 
+/**
+ * Validate DFO metadata
+ *
+ * @param {Object} adapters - The adapters injected required by the function.
+ * @param {IpfsHttpClient} adapters.ipfsHttpClient - The web3 instance.
+ * @param {EthosContext} adapters.context - The application context. * @param files
+ * @param metadata
+ * @param noUpload
+ * @return {Promise<*|*>}
+ */
 async function validateDFOMetadata(
   { context, ipfsHttpClient },
   metadata,

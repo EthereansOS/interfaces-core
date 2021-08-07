@@ -1,3 +1,10 @@
+/***
+ * Check cover size
+ * @param cover
+ * @param width
+ * @param height
+ * @return {Promise<unknown>}
+ */
 function checkCoverSize(cover, width, height) {
   cover = (cover.item && cover.item(0)) || cover
   width = width || 320
