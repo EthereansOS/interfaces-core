@@ -15,10 +15,11 @@
     "build:dev": "rollup -c --watch",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
-    "docs:api:math": "jsdoc2md src/lib/math/*.js > docs/api-math.md",
-    "docs:api:utils": "jsdoc2md src/lib/utils/*.js > docs/api-utils.md",
-    "docs:api:web3": "jsdoc2md src/lib/web3/*.js > docs/api-web3.md",
-    "docs:api": "npm run docs:api:math && npm run docs:api:utils && npm run docs:api:web3"
+    "docs:api:math": "jsdoc2md src/lib/math/*.js > docs/api/math.md",
+    "docs:api:utils": "jsdoc2md src/lib/utils/*.js > docs/api/utils.md",
+    "docs:api:web3": "jsdoc2md src/lib/web3/*.js > docs/api/web3.md",
+    "docs:api": "npm run docs:api:math && npm run docs:api:utils && npm run docs:api:web3",
+    "docs": "docsify serve ./docs -p 3001"
   },
   "keywords": [],
   "author": "",
@@ -48,6 +49,7 @@
     "@testing-library/react-hooks": "^7.0.1",
     "@testing-library/user-event": "^13.2.1",
     "babel-eslint": "^10.1.0",
+    "docsify-cli": "4.4.3",
     "eslint": "^7.11.00",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^6.0.0",
