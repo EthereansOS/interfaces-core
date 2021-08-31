@@ -5,7 +5,7 @@ export const UPDATING = 'updating'
 export const NOT_CONNECTED = 'not_connected'
 export const CONNECTED = 'connected'
 
-function initWeb3(context, setState) {
+function initWeb3(context, setState, provider) {
   let web3
   let networkId
   let web3ForLogs
@@ -37,7 +37,8 @@ function initWeb3(context, setState) {
           walletAvatar,
           context,
         },
-        onEthereumUpdate
+        onEthereumUpdate,
+        provider
       )
 
       for (const afterInitFn of afterInitListFn || []) {

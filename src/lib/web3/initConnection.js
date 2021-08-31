@@ -11,7 +11,7 @@ import blockchainCall from './blockchainCall'
  * @param onUpdate
  * @return {Promise<void|{uniswapV2Factory: *, walletAvatar: string | string, web3ForLogs: *, uniswapV2Router: *, wethAddress: *, web3: {currentProvider}, networkId: *, walletAddress: *, proxyChangedTopic: *}>}
  */
-async function initConnection(environment, onUpdate) {
+async function initConnection(environment, onUpdate, provider) {
   const { context } = environment
   let networkId = environment.networkId
   let web3 = environment.web3
@@ -23,28 +23,29 @@ async function initConnection(environment, onUpdate) {
   let walletAvatar = environment.walletAvatar
   let proxyChangedTopic = environment.proxyChangedTopic
 
-  if (!networkId || networkId !== parseInt(window.ethereum.chainId)) {
+  if (!networkId || networkId !== parseInt(provider.chainId)) {
     resetContracts()
-    window.ethereum &&
-      (window.ethereum.enable = () =>
-        window.ethereum.request({ method: 'eth_requestAccounts' }))
-    window.ethereum &&
-      window.ethereum.autoRefreshOnNetworkChange &&
-      (window.ethereum.autoRefreshOnNetworkChange = false)
-    window.ethereum &&
-      window.ethereum.on &&
-      (!window.ethereum._events ||
-        !window.ethereum._events.accountsChanged ||
-        window.ethereum._events.accountsChanged.length === 0) &&
-      window.ethereum.on('accountsChanged', onUpdate)
-    window.ethereum &&
-      window.ethereum.on &&
-      (!window.ethereum._events ||
-        !window.ethereum._events.chainChanged ||
-        window.ethereum._events.chainChanged.length === 0) &&
-      window.ethereum.on('chainChanged', onUpdate)
-    // web3 = await createWeb3(context.blockchainConnectionString || window.ethereum);
-    web3 = await createWeb3(window.ethereum)
+
+    provider &&
+      (provider.enable = () =>
+        provider.request({ method: 'eth_requestAccounts' }))
+    provider &&
+      provider.autoRefreshOnNetworkChange &&
+      (provider.autoRefreshOnNetworkChange = false)
+    provider &&
+      provider.on &&
+      (!provider._events ||
+        !provider._events.accountsChanged ||
+        provider._events.accountsChanged.length === 0) &&
+      provider.on('accountsChanged', onUpdate)
+    provider &&
+      provider.on &&
+      (!provider._events ||
+        !provider._events.chainChanged ||
+        provider._events.chainChanged.length === 0) &&
+      provider.on('chainChanged', onUpdate)
+
+    web3 = await createWeb3(provider)
     networkId = await web3.eth.net.getId()
     web3ForLogs = await createWeb3(
       getNetworkElement(
@@ -86,7 +87,6 @@ async function initConnection(environment, onUpdate) {
       proxyChangedTopic || web3.utils.sha3('ProxyChanged(address)')
   }
 
-  await window.ethereum.enable()
   const accounts = await web3.eth.getAccounts()
   walletAddress = accounts && accounts.length > 0 ? accounts[0] : null
   walletAvatar = walletAddress ? makeBlockie(walletAddress) : null
