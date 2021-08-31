@@ -33,9 +33,9 @@ const Web3ContextInitializer = ({ children }) => {
   const [state, setState] = useState({
     connectionStatus: NOT_CONNECTED,
   })
-  const [methods, setMethods] = useState({})
   const context = useEthosContext()
   const wallet = useWallet()
+  const [methods, setMethods] = useState({ connect: wallet.connect })
 
   const afterInitFunctionList = usePlaceholder('web3/afterInit')
 
@@ -47,22 +47,13 @@ const Web3ContextInitializer = ({ children }) => {
   }, [context])
 
   useEffect(() => {
-    setMethods((s) => ({
-      ...s,
-      connect: async () => {
-        await wallet.connect('injected')
-      },
-    }))
-  }, [wallet])
-
-  useEffect(() => {
     async function run() {
       if (initStatus !== WEB3_CONTEXT_STATUS_NEW || !wallet.ethereum) {
         return
       }
 
       setInitStatus(WEB3_CONTEXT_STATUS_ON_INIT)
-      const { onEthereumUpdate, connect } = initWeb3(
+      const { onEthereumUpdate, connect: startUp } = initWeb3(
         context,
         setState,
         wallet.ethereum
@@ -73,7 +64,7 @@ const Web3ContextInitializer = ({ children }) => {
         onEthereumUpdate,
       }))
 
-      await connect(afterInitFunctionList.map((item) => item.fn))
+      await startUp(afterInitFunctionList.map((item) => item.fn))
       setInitStatus(WEB3_CONTEXT_STATUS_INIT)
     }
 
