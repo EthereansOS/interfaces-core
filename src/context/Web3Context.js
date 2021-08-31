@@ -22,7 +22,13 @@ const CHAINS = new Map([
 
 export const Web3ContextProvider = (props) => {
   return (
-    <UseWalletProvider chainId={CHAINS.get('Ropsten')} connectors={{}}>
+    <UseWalletProvider
+      chainId={CHAINS.get(
+        !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+          ? 'Ropsten'
+          : 'Mainnet'
+      )}
+      connectors={{}}>
       <Web3ContextInitializer {...props} />
     </UseWalletProvider>
   )
