@@ -20,6 +20,11 @@ const CHAINS = new Map([
   ['Ropsten', 3],
 ])
 
+const INFURA_LINK =
+  !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+    ? 'https://ropsten.infura.io/v3/2eddecc384554c7b8fce50f068a1232d'
+    : 'https://mainnet.infura.io/v3/2eddecc384554c7b8fce50f068a1232d'
+
 export const Web3ContextProvider = (props) => {
   return (
     <UseWalletProvider
@@ -28,7 +33,14 @@ export const Web3ContextProvider = (props) => {
           ? 'Ropsten'
           : 'Mainnet'
       )}
-      connectors={{}}>
+      connectors={{
+        walletconnect: {
+          rpcUrl: INFURA_LINK,
+        },
+        walletlink: {
+          url: INFURA_LINK,
+        },
+      }}>
       <Web3ContextInitializer {...props} />
     </UseWalletProvider>
   )
