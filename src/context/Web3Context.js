@@ -14,33 +14,22 @@ const WEB3_CONTEXT_STATUS_NEW = 'WEB3_CONTEXT_STATUS_NEW'
 const WEB3_CONTEXT_STATUS_ON_INIT = 'WEB3_CONTEXT_STATUS_ON_INIT'
 const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
-// https://chainlist.org/
-const CHAINS = new Map([
-  ['Mainnet', 1],
-  ['Ropsten', 3],
-])
-
-const INFURA_LINK =
-  !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-    ? 'https://ropsten.infura.io/v3/2eddecc384554c7b8fce50f068a1232d'
-    : 'https://mainnet.infura.io/v3/2eddecc384554c7b8fce50f068a1232d'
-
 export const Web3ContextProvider = (props) => {
+  const context = useEthosContext()
+  const [activeChain, setActiveChain] = useState('ropsten')
+
+  const connectors = context.connectors.reduce((acc, connector) => {
+    if (connector.chainIdsEnabled.includes(activeChain)) {
+      return { ...acc, ...connector[activeChain + 'Connector'] }
+    }
+
+    return acc
+  }, {})
+
   return (
     <UseWalletProvider
-      chainId={CHAINS.get(
-        !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-          ? 'Ropsten'
-          : 'Mainnet'
-      )}
-      connectors={{
-        walletconnect: {
-          rpcUrl: INFURA_LINK,
-        },
-        walletlink: {
-          url: INFURA_LINK,
-        },
-      }}>
+      chainId={+context.chainNameToChainId[activeChain]}
+      connectors={connectors}>
       <Web3ContextInitializer {...props} />
     </UseWalletProvider>
   )
