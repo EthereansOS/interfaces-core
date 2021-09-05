@@ -16,10 +16,10 @@ const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
-  const [activeChain, setActiveChain] = useState('ropsten')
+  const [activeChain, setActiveChain] = useState('Mainnet')
 
   const connectors = context.connectors.reduce((acc, connector) => {
-    if (connector.chainIdsEnabled.includes(activeChain)) {
+    if (connector.enabledChains.includes(activeChain)) {
       return { ...acc, ...connector[activeChain + 'Connector'] }
     }
 
@@ -37,14 +37,19 @@ export const Web3ContextProvider = (props) => {
 
 const Web3ContextInitializer = ({ children }) => {
   const [initStatus, setInitStatus] = useState(WEB3_CONTEXT_STATUS_NEW)
+  const wallet = useWallet()
   const [state, setState] = useState({
     connectionStatus: NOT_CONNECTED,
+    wallet,
   })
   const context = useEthosContext()
-  const wallet = useWallet()
-  const [methods, setMethods] = useState({ connect: wallet.connect })
+  const [methods, setMethods] = useState({})
 
   const afterInitFunctionList = usePlaceholder('web3/afterInit')
+
+  useEffect(() => {
+    setState((s) => ({ ...s, wallet }))
+  }, [wallet])
 
   useEffect(() => {
     setState((s) => ({
