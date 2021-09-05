@@ -16,7 +16,7 @@ const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
-  const [activeChain, setActiveChain] = useState('Mainnet')
+  const [activeChain, setActiveChain] = useState('Ropsten')
 
   const connectors = context.connectors.reduce((acc, connector) => {
     if (connector.enabledChains.includes(activeChain)) {
