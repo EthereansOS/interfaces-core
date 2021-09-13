@@ -16,6 +16,8 @@ export { default as useEthosContext } from './hooks/useEthosContext'
 export { default as ethosEvents } from './lib/ethosEvents'
 export { default as tokenPercentage } from './lib/tokenPercentage'
 
+export * from 'use-wallet'
+
 export {
   CONNECTED as WEB3_CONNECTED,
   CONNECTING as WEB3_CONNECTING,

@@ -332,3 +332,51 @@ export default Navigation
 ```
 
 You will see the navigation links based on your `plugins.js` configuration working smoothly.
+
+## 5 - Add wallet providers
+
+When using the `<ConnectWidget />` component from the `interfaces-ui` package,
+If you want to specify which wallet providers make available to the users (such as Metamask, Fortmatic and so on), you can do so specifying the providers, and their configuration, inside the context.json file under the "connectors" key:
+
+```json
+  "connectors": [
+    {
+      "id": "injected",
+      "buttonText": "Metamask",
+      "enabledChains": ["Mainnet", "Ropsten"]
+    },
+    {
+      "id": "walletconnect",
+      "buttonText": "WalletConnect",
+      "enabledChains": ["Mainnet", "Ropsten"],
+      "MainnetConnector": {
+        "walletconnect": {
+          "rpcUrl": "https://mainnet.infura.io/v3/2eddecc384554c7b8fce50f068a1232d"
+        }
+      },
+      "RopstenConnector": {
+        "walletconnect": {
+          "rpcUrl": "https://ropsten.infura.io/v3/2eddecc384554c7b8fce50f068a1232d"
+        }
+      }
+    },
+    {
+      "id": "walletlink",
+      "buttonText": "Coinbase Wallet",
+      "enabledChains": ["Mainnet"],
+      "MainnetConnector": {
+        "walletlink": {
+          "url": "https://mainnet.infura.io/v3/2eddecc384554c7b8fce50f068a1232d"
+        }
+      }
+    }
+  ],
+```
+
+Underneath we use the [use-wallet](https://github.com/aragon/use-wallet) hook and the [web3-react](https://github.com/NoahZinsmeister/web3-react) lib. The connectors that can be added here are the same supported by the two libs.<br/>
+These are the properties a connector can have:
+
+- id: is the provider key specified by [use-wallet](https://github.com/aragon/use-wallet#connectors) to initiate correctly a connection
+- buttonText: the button text to show when opening the <ConnectWidget /> modal
+- enabledChains: an array of network names where the providers' wallet is able to operate on (coinbase wallet for example works only on mainnet)
+- [Mainnet]Connector: this is the [configuration object](https://github.com/NoahZinsmeister/web3-react/tree/v6/docs/connectors) needed for each provider that we differentiate based on the current active network name (so it could also be RopstenConnector, KovanConnector and so on)

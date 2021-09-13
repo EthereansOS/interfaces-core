@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
+import { UseWalletProvider, useWallet } from 'use-wallet'
 
 import ethosEvents from '../lib/ethosEvents'
 import initWeb3, { NOT_CONNECTED, CONNECTED, CONNECTING } from '../lib/web3'
@@ -13,15 +14,42 @@ const WEB3_CONTEXT_STATUS_NEW = 'WEB3_CONTEXT_STATUS_NEW'
 const WEB3_CONTEXT_STATUS_ON_INIT = 'WEB3_CONTEXT_STATUS_ON_INIT'
 const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
-export const Web3ContextProvider = ({ children }) => {
+export const Web3ContextProvider = (props) => {
+  const context = useEthosContext()
+  const [activeChain, setActiveChain] = useState('Ropsten')
+
+  const connectors = context.connectors.reduce((acc, connector) => {
+    if (connector.enabledChains.includes(activeChain)) {
+      return { ...acc, ...connector[activeChain + 'Connector'] }
+    }
+
+    return acc
+  }, {})
+
+  return (
+    <UseWalletProvider
+      chainId={+context.chainNameToChainId[activeChain]}
+      connectors={connectors}>
+      <Web3ContextInitializer {...props} />
+    </UseWalletProvider>
+  )
+}
+
+const Web3ContextInitializer = ({ children }) => {
   const [initStatus, setInitStatus] = useState(WEB3_CONTEXT_STATUS_NEW)
+  const wallet = useWallet()
   const [state, setState] = useState({
     connectionStatus: NOT_CONNECTED,
+    wallet,
   })
-  const [methods, setMethods] = useState({})
   const context = useEthosContext()
+  const [methods, setMethods] = useState({})
 
   const afterInitFunctionList = usePlaceholder('web3/afterInit')
+
+  useEffect(() => {
+    setState((s) => ({ ...s, wallet }))
+  }, [wallet])
 
   useEffect(() => {
     setState((s) => ({
@@ -31,34 +59,29 @@ export const Web3ContextProvider = ({ children }) => {
   }, [context])
 
   useEffect(() => {
-    setMethods((s) => ({
-      ...s,
-      connect: async () => {
-        await s.connectFn(afterInitFunctionList.map((item) => item.fn))
-      },
-    }))
-  }, [afterInitFunctionList])
-
-  useEffect(() => {
     async function run() {
-      if (initStatus !== WEB3_CONTEXT_STATUS_NEW) {
+      if (initStatus !== WEB3_CONTEXT_STATUS_NEW || !wallet.ethereum) {
         return
       }
 
       setInitStatus(WEB3_CONTEXT_STATUS_ON_INIT)
-      const { onEthereumUpdate, connect } = initWeb3(context, setState)
+      const { onEthereumUpdate, connect: startUp } = initWeb3(
+        context,
+        setState,
+        wallet.ethereum
+      )
 
       setMethods((s) => ({
         ...s,
         onEthereumUpdate,
-        connectFn: connect,
       }))
 
+      await startUp(afterInitFunctionList.map((item) => item.fn))
       setInitStatus(WEB3_CONTEXT_STATUS_INIT)
     }
 
     run()
-  }, [context, initStatus])
+  }, [afterInitFunctionList, context, initStatus, wallet.ethereum])
 
   const values = {
     ...methods,
@@ -70,7 +93,7 @@ export const Web3ContextProvider = ({ children }) => {
   return <Web3Context.Provider value={values}>{children}</Web3Context.Provider>
 }
 
-Web3ContextProvider.propTypes = {
+Web3ContextInitializer.propTypes = {
   children: T.oneOfType([T.arrayOf(T.node), T.node]).isRequired,
 }
 

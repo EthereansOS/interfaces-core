@@ -10,7 +10,7 @@ A magical ✨ documentation for creating your first EthOS app.
 
 <!-- // TODO: add repo link
 [GitHub](https://github.com/docsifyjs/docsify/) -->
-[Get Started](#dfohub)
+[Get Started](#ethos-core-package)
 
 <!-- background color -->
 
