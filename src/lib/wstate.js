@@ -1,10 +1,8 @@
 const restoredState = sessionStorage.getItem('wstate')
-
 const initialState = restoredState ? JSON.parse(restoredState) : {}
-
 const subscribers = []
 
-let state
+let state = {}
 
 const get = (key) => {
   return state[key]
@@ -16,7 +14,7 @@ const set = (key, value) => {
 }
 
 const reset = () => {
-  state = initialState
+  state = { ...initialState }
   sessionStorage.setItem('wstate', JSON.stringify(initialState))
 }
 
