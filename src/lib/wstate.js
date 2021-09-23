@@ -1,6 +1,7 @@
+import { ethosEvents } from '..'
+
 const restoredState = sessionStorage.getItem('wstate')
 const initialState = restoredState ? JSON.parse(restoredState) : {}
-const subscribers = []
 
 let state = {}
 
@@ -23,20 +24,9 @@ const print = () => {
   console.log(state)
 }
 
-const dispatch = (value) => {
-  subscribers.forEach((cb) => {
-    cb(value)
-  })
-}
+const dispatch = ethosEvents.publish
 
-const subscribe = (cb) => {
-  subscribers.push(cb)
-
-  return () => {
-    const index = subscribers.indexOf(cb)
-    subscribers.splice(index, 1)
-  }
-}
+const subscribe = ethosEvents.subscribe
 
 window.set = set
 window.get = get
