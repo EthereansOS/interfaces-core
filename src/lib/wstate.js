@@ -1,4 +1,4 @@
-import { ethosEvents } from '..'
+import PubSub from 'pubsub-js'
 
 const restoredState = sessionStorage.getItem('wstate')
 const initialState = restoredState ? JSON.parse(restoredState) : {}
@@ -20,17 +20,17 @@ const reset = () => {
 }
 
 const print = () => {
-  console.log('WSTATE')
+  console.log('----wstate----')
   console.log(state)
 }
 
-const dispatch = ethosEvents.publish
+const dispatch = (payload) => PubSub.publish('wstate', payload)
 
-const subscribe = ethosEvents.subscribe
+const subscribe = (payload) => PubSub.subscribe('wstate', payload)
 
-window.set = set
-window.get = get
-window.dispatch = dispatch
-window.reset = reset
-window.subscribe = subscribe
-window.print = print
+window.wSet = set
+window.wGet = get
+window.wDispatch = dispatch
+window.wReset = reset
+window.wSubscribe = subscribe
+window.wPrint = print
