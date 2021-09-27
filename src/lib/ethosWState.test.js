@@ -5,9 +5,10 @@ describe('ethosWState', () => {
     jest.clearAllMocks()
   })
 
-  it('should be available as window.wstate and contain set, get, reset, print, subscribe methods', () => {
-    expect(window.wstate).toMatchObject({
+  it('should be available as window.wstate and contain set, setObject, get, reset, print, subscribe methods', () => {
+    expect(window.ethosWState).toMatchObject({
       set: expect.any(Function),
+      setObject: expect.any(Function),
       get: expect.any(Function),
       reset: expect.any(Function),
       print: expect.any(Function),
@@ -61,7 +62,7 @@ describe('ethosWState', () => {
     expect(res).toBe(undefined)
     expect(sessionStorage.setItem).toHaveBeenCalledWith(
       'ethosWState',
-      JSON.stringify({})
+      undefined
     )
   })
 
