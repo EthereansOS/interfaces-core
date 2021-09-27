@@ -159,39 +159,38 @@ If you prefer to build only this package, just run:
 npm run build
 ```
 
-to simply build the package, or
+To build and keep watching for changes:
 
 ```shell script
 npm run build:dev
 ```
 
-to build and keep watching for changes.
-
-## Development with `Interfaces-Framework`
+## Development with `Interfaces-framework`
 
 To use `interfaces-core` for development (so using a checked-out version instead of the `npm` dependencies) some steps must be followed.
 
-Assuming that we have cloned [Interfaces-Framework](https://github.com/EthereansOS/Interfaces-Framework) in the same folder where we cloned this repo, we need to:
+Assuming that we have cloned [Interfaces-framework](https://github.com/EthereansOS/Interfaces-framework) in the same folder where we cloned this repo, we need to:
 
-- `npm install`
-- `npm link ../Interfaces-Framework/node_modules/react`
-- `npm build`
+- `npm install` (only if you don't already have the deps installed)
+- `npm link ../Interfaces-framework/node_modules/react`
+- `npm build` (or build:dev to develop in watch mode. See below)
 - `npm link`
 
-The first `npm link` links the `react` used by `Interfaces-Framework` to avoid [this problem](https://reactjs.org/warnings/invalid-hook-call-warning.html#duplicate-react).
+The first `npm link` links the `react` used by `Interfaces-framework` to avoid [this problem](https://reactjs.org/warnings/invalid-hook-call-warning.html#duplicate-react).
 
-Then, in `Interface-Framework`, for each packages/\*:
+Then, enter in `Interface-Framework` and link it to the core:
 
+- `cd ../Interfaces-framework`
 - `npm link @ethereansos/interfaces-core`
-- Remove `package-lock.js`
-- Execute `npm install` in `Interfaces-Framework`
 
-PS: Remember to execute **just** the linkings everytime you install a new dependency in either of the two projects.
+After this, you're using the checked-out version for all the apps or plugins in the `packages` folder.
+
+PS: Remember to execute **just** the linkings every time you install a new dependency in either of the two projects.
 
 ### Development in watch mode
 
 To start build the core at each file change, after having followed the above instructions, just run `npm run build:dev` and if you've linked this package with the Interfaces-Framework package, you'll see live changes as soon as you edit the code.
 
-## Known issues
+## FAQ
 
 Be sure that `Interfaces-Framework` uses the new dependencies @ethereansos/core and **not** `@dfohub/core`. If not, change the import.
