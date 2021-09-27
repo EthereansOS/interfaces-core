@@ -1,3 +1,5 @@
+import './lib/ethosWState'
+
 export * from './context/GlobalContexts'
 export * from './hooks/usePlugins'
 export * from './hooks/usePrevious'
