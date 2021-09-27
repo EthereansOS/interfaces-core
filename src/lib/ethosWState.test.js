@@ -61,6 +61,10 @@ describe('ethosWState', () => {
 
     expect(res).toBe(undefined)
     expect(sessionStorage.removeItem).toHaveBeenCalledWith('ethosWState')
+
+    expect(window.ethosWState.set('key2', 'value2')).toMatchObject({
+      key2: 'value2',
+    })
   })
 
   it('should publish a state change to all subscribers', async () => {
@@ -77,5 +81,12 @@ describe('ethosWState', () => {
     expect(valueFromSubscriber).toMatchObject({
       dispatched: 'value',
     })
+  })
+
+  it('should publish a state change to all subscribers', async () => {
+    window.ethosWState.set('key', 'value')
+    const res = window.ethosWState.setObject({ key1: 'value1', key2: 'value2' })
+
+    expect(res).toMatchObject({ key1: 'value1', key2: 'value2', key: 'value' })
   })
 })
