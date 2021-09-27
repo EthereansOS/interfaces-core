@@ -1,6 +1,6 @@
-import './wstate'
+import './ethosWState'
 
-describe('wstate', () => {
+describe('ethosWState', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -18,13 +18,13 @@ describe('wstate', () => {
 
   it('should set a value and return the state and store it in sessionStorage', () => {
     Storage.prototype.setItem = jest.fn()
-    const res = window.wstate.set('key', 'value')
+    const res = window.ethosWState.set('key', 'value')
 
     expect(res).toMatchObject({
       key: 'value',
     })
     expect(sessionStorage.setItem).toHaveBeenCalledWith(
-      'wstate',
+      'ethosWState',
       JSON.stringify({
         key: 'value',
       })
@@ -32,17 +32,17 @@ describe('wstate', () => {
   })
 
   it('should set a value under a certain key and be able to retrieve it calling get(key)', () => {
-    window.wstate.set('key', 'value')
+    window.ethosWState.set('key', 'value')
 
-    const res = window.wstate.get('key')
+    const res = window.ethosWState.get('key')
 
     expect(res).toBe('value')
   })
 
   it('should set a value and call console.log when calling the print() method', () => {
     console.log = jest.fn()
-    window.wstate.set('key', 'value')
-    window.wstate.print()
+    window.ethosWState.set('key', 'value')
+    window.ethosWState.print()
 
     expect(console.log).toHaveBeenCalledWith('----wstate----')
     expect(console.log).toHaveBeenCalledWith({
@@ -53,14 +53,14 @@ describe('wstate', () => {
   it('should set a value and reset it to the initial state calling the reset() method and store it in sessionStorage', () => {
     Storage.prototype.setItem = jest.fn()
 
-    window.wstate.set('key', 'value')
-    window.wstate.reset()
+    window.ethosWState.set('key', 'value')
+    window.ethosWState.reset()
 
-    const res = window.wstate.get('key')
+    const res = window.ethosWState.get('key')
 
     expect(res).toBe(undefined)
     expect(sessionStorage.setItem).toHaveBeenCalledWith(
-      'wstate',
+      'ethosWState',
       JSON.stringify({})
     )
   })
@@ -71,8 +71,8 @@ describe('wstate', () => {
       valueFromSubscriber = value
     }
 
-    window.wstate.subscribe(sub)
-    window.wstate.set('dispatched', 'value')
+    window.ethosWState.subscribe(sub)
+    window.ethosWState.set('dispatched', 'value')
 
     await new Promise((res) => setTimeout(res, 1000))
 
