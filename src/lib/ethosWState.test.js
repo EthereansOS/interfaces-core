@@ -52,7 +52,7 @@ describe('ethosWState', () => {
   })
 
   it('should set a value and reset it to the initial state calling the reset() method and store it in sessionStorage', () => {
-    Storage.prototype.setItem = jest.fn()
+    Storage.prototype.removeItem = jest.fn()
 
     window.ethosWState.set('key', 'value')
     window.ethosWState.reset()
@@ -60,10 +60,7 @@ describe('ethosWState', () => {
     const res = window.ethosWState.get('key')
 
     expect(res).toBe(undefined)
-    expect(sessionStorage.setItem).toHaveBeenCalledWith(
-      'ethosWState',
-      undefined
-    )
+    expect(sessionStorage.removeItem).toHaveBeenCalledWith('ethosWState')
   })
 
   it('should publish a state change to all subscribers', async () => {
