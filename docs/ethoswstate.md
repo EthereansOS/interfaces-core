@@ -23,10 +23,12 @@ This module is used to debug stuff and insert data directly into the browser's c
 
 ## API
 
-`setObject: (value: any) => newState`
-`set: (key: string, value: any) => newState`
-`get: (key) => value`
-`reset: () => newState`
-`print: () => void // prints the state entire value in the browser's terminal`
-`subscribe: (subscriber: fn) => void`
-`unsubscribe: (subscribeReturn) => void`
+```
+setObject: (value: any) => newState
+set: (key: string, value: any) => newState
+get: (key) => value
+reset: () => newState
+print: () => void // prints the state entire value in the browser's terminal
+subscribe: (subscriber: fn) => void
+unsubscribe: (subscribeReturn) => void
+```
