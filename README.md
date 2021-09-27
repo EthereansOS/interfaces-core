@@ -1,4 +1,4 @@
-# EthOS core package
+# EthOS core
 
 This package includes some core features used by the EtheranOS apps, like the plugin system and the integration with Ethereum.
 
