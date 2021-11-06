@@ -1,7 +1,7 @@
 import web3Utils from 'web3-utils'
 
 import { VOID_ETHEREUM_ADDRESS } from '../constants'
-import shortenWord from '../utils/shortenWords'
+import shortenWord from '../utils/shortenWord'
 import stringToLines from '../utils/stringToLines'
 import toDecimals from '../utils/toDecimals'
 import formatMoney from '../utils/formatMoney'
@@ -154,7 +154,7 @@ ${sendTos
 `)
   var descriptions = [
     `Transfering ${tokenId ? `${symbol} token #` : 'totally'} ${
-      tokenId ? shortenWord({ context }, tokenId, 10) : amount
+      tokenId ? shortenWord({ context, charsAmount : 10 }, tokenId) : amount
     } ${tokenId ? '' : symbol} to specified address${!tokenId ? 'es' : ''}`,
   ]
 
