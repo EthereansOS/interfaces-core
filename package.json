@@ -1,6 +1,6 @@
 {
   "name": "@ethereansos/interfaces-core",
-  "version": "0.4.6",
+  "version": "0.4.8",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -19,7 +19,8 @@
     "docs:api:utils": "jsdoc2md src/lib/utils/*.js > docs/api/utils.md",
     "docs:api:web3": "jsdoc2md src/lib/web3/*.js > docs/api/web3.md",
     "docs:api": "npm run docs:api:math && npm run docs:api:utils && npm run docs:api:web3",
-    "docs": "docsify serve ./docs -p 3001"
+    "docs": "docsify serve ./docs -p 3001",
+    "dist": "npm version patch && npm run build && npm publish"
   },
   "keywords": [],
   "author": "",
