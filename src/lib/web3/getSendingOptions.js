@@ -1,4 +1,4 @@
-import { getAddress } from './getAddress'
+import getAddress from './getAddress'
 
 /**
  * Get sending options

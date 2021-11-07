@@ -27,5 +27,6 @@ export { default as mint } from './mint'
 export { default as split } from './split'
 export { default as uploadToIPFS } from './uploadToIPFS'
 export { default as transfer } from './transfer'
+export { default as sendAsync } from './sendAsync'
 
 export * from './contracts'

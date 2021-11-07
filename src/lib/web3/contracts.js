@@ -1,6 +1,6 @@
 import { VOID_ETHEREUM_ADDRESS } from '../constants'
 
-import { getAddress } from './getAddress'
+import getAddress from './getAddress'
 import sendBlockchainTransaction from './sendBlockchainTransaction'
 
 let allContracts = {}

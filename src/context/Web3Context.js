@@ -16,19 +16,18 @@ const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
-  const [activeChain, setActiveChain] = useState('Ropsten')
+  var activeChain = props.activeChain || 1;
 
-  const connectors = context.connectors.reduce((acc, connector) => {
-    if (connector.enabledChains.includes(activeChain)) {
-      return { ...acc, ...connector[activeChain + 'Connector'] }
+  const connectors = context.walletConnectors.reduce((acc, connector) => {
+    if (!connector.settings || connector.settings[activeChain]) {
+      return { ...acc, ...{[connector.id] : connector.settings ? connector.settings[activeChain] : {}} }
     }
-
     return acc
   }, {})
 
   return (
     <UseWalletProvider
-      chainId={+context.chainNameToChainId[activeChain]}
+      chainId={+activeChain}
       connectors={connectors}>
       <Web3ContextInitializer {...props} />
     </UseWalletProvider>

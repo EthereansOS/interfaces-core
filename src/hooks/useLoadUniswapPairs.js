@@ -5,7 +5,7 @@ import toSubArrays from '../lib/utils/toSubArrays'
 import loadBlockSearchTranches from '../lib/web3/loadBlockSearchTranches'
 import getLogs from '../lib/web3/getLogs'
 import loadTokenInfos from '../lib/web3/loadTokenInfos'
-import { VOID_ETHEREUM_ADDRESS_EXTENDED } from '../lib/constants'
+import { VOID_BYTES32 } from '../lib/constants'
 import { useWeb3 } from '../context/Web3Context'
 import useEthosContext from '../hooks/useEthosContext'
 
@@ -39,7 +39,7 @@ export function useLoadUniswapPairs(address, secondToken) {
       let subArrays
       if (
         myToken.length === 0 ||
-        (myToken.length === 1 && myToken[0] === VOID_ETHEREUM_ADDRESS_EXTENDED)
+        (myToken.length === 1 && myToken[0] === VOID_BYTES32)
       ) {
         subArrays = toSubArrays(
           await (
