@@ -154,7 +154,7 @@ ${sendTos
 `)
   var descriptions = [
     `Transfering ${tokenId ? `${symbol} token #` : 'totally'} ${
-      tokenId ? shortenWord({ context, charsAmount : 10 }, tokenId) : amount
+      tokenId ? shortenWord({ context, charsAmount: 10 }, tokenId) : amount
     } ${tokenId ? '' : symbol} to specified address${!tokenId ? 'es' : ''}`,
   ]
 

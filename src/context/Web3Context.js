@@ -16,19 +16,24 @@ const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
-  var activeChain = props.activeChain || 1;
+  var activeChain = props.activeChain || 1
 
   const connectors = context.walletConnectors.reduce((acc, connector) => {
     if (!connector.settings || connector.settings[activeChain]) {
-      return { ...acc, ...{[connector.id] : connector.settings ? connector.settings[activeChain] : {}} }
+      return {
+        ...acc,
+        ...{
+          [connector.id]: connector.settings
+            ? connector.settings[activeChain]
+            : {},
+        },
+      }
     }
     return acc
   }, {})
 
   return (
-    <UseWalletProvider
-      chainId={+activeChain}
-      connectors={connectors}>
+    <UseWalletProvider chainId={+activeChain} connectors={connectors}>
       <Web3ContextInitializer {...props} />
     </UseWalletProvider>
   )
@@ -82,11 +87,20 @@ const Web3ContextInitializer = ({ children }) => {
     run()
   }, [afterInitFunctionList, context, initStatus, wallet.ethereum])
 
+  function disconnect() {
+    wallet && wallet.reset()
+    setState({
+      ...state,
+      connectionStatus: NOT_CONNECTED,
+    })
+  }
+
   const values = {
     ...methods,
     ...state,
     ethosEvents,
     context,
+    disconnect,
   }
 
   return <Web3Context.Provider value={values}>{children}</Web3Context.Provider>

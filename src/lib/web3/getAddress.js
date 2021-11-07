@@ -1,4 +1,4 @@
-import sendAsync from "./sendAsync";
+import sendAsync from './sendAsync'
 
 /**
  * Get current ethereum address
@@ -8,9 +8,9 @@ import sendAsync from "./sendAsync";
  * @return Promise<string>
  */
 export default async function getAddress({ provider }) {
-    try {
-        return provider.accounts[0];
-    } catch (e) {
-        return (await sendAsync(provider, 'eth_requestAccounts'))[0];
-    }
+  try {
+    return provider.accounts[0]
+  } catch (e) {
+    return (await sendAsync(provider, 'eth_requestAccounts'))[0]
+  }
 }
