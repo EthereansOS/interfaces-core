@@ -16,24 +16,8 @@ const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
-  var activeChain = props.activeChain || 1
-
-  const connectors = context.walletConnectors.reduce((acc, connector) => {
-    if (!connector.settings || connector.settings[activeChain]) {
-      return {
-        ...acc,
-        ...{
-          [connector.id]: connector.settings
-            ? connector.settings[activeChain]
-            : {}
-        },
-      }
-    }
-    return acc
-  }, {})
-
   return (
-    <UseWalletProvider chainId={[1,3]} connectors={connectors}>
+    <UseWalletProvider connectors={context.useWalletSettings}>
       <Web3ContextInitializer {...props} />
     </UseWalletProvider>
   )
