@@ -102,6 +102,7 @@ const Web3ContextInitializer = ({ children }) => {
     context,
     disconnect,
   }
+  wallet && wallet.ethereum && (values.connectionStatus = CONNECTED);
 
   return <Web3Context.Provider value={values}>{children}</Web3Context.Provider>
 }
