@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
+import { useWeb3React } from '@web3-react/core'
 
 import ethosEvents from '../lib/ethosEvents'
 import initWeb3, { NOT_CONNECTED, CONNECTED, CONNECTING } from '../lib/web3'
@@ -40,6 +41,9 @@ export const Web3ContextProvider = (props) => {
 }
 
 const Web3ContextInitializer = ({ children }) => {
+
+  var test = useWeb3React();
+  console.log(test);
   const [initStatus, setInitStatus] = useState(WEB3_CONTEXT_STATUS_NEW)
   const wallet = useWallet()
   const [state, setState] = useState({
