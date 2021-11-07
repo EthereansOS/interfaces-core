@@ -47,7 +47,6 @@ const Web3ContextInitializer = ({ children }) => {
   const afterInitFunctionList = usePlaceholder('web3/afterInit')
 
   useEffect(() => {
-    console.log(wallet, wallet && wallet.ethereum)
     setState((s) => ({
       ...s,
       wallet,
