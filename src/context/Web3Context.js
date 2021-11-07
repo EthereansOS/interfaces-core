@@ -16,8 +16,19 @@ const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
+
+  const connectors = context.useWalletSettings.reduce(
+    (acc, connector) => ({
+      ...acc,
+      ...{
+        [connector.id]: connector.settings || {},
+      },
+    }),
+    {}
+  )
+
   return (
-    <UseWalletProvider connectors={context.useWalletSettings}>
+    <UseWalletProvider connectors={connectors}>
       <Web3ContextInitializer {...props} />
     </UseWalletProvider>
   )
@@ -36,11 +47,14 @@ const Web3ContextInitializer = ({ children }) => {
   const afterInitFunctionList = usePlaceholder('web3/afterInit')
 
   useEffect(() => {
-    console.log(wallet, wallet && wallet.ethereum);
-    setState((s) => ({ 
+    console.log(wallet, wallet && wallet.ethereum)
+    setState((s) => ({
       ...s,
       wallet,
-      connectionStatus: wallet && wallet.ethereum ? CONNECTED : s.connectionStatus || NOT_CONNECTED
+      connectionStatus:
+        wallet && wallet.ethereum
+          ? CONNECTED
+          : s.connectionStatus || NOT_CONNECTED,
     }))
   }, [wallet])
 
@@ -88,7 +102,7 @@ const Web3ContextInitializer = ({ children }) => {
         wallet,
         connectionStatus: NOT_CONNECTED,
       }))
-    }
+    },
   }
 
   return <Web3Context.Provider value={values}>{children}</Web3Context.Provider>
