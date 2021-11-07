@@ -1,4 +1,4 @@
-//import Transaction from "ethereumjs-tx";
+import { Transaction } from '@ethereumjs/tx'
 import Web3 from 'web3'
 
 import sendAsync from './sendAsync'
@@ -93,10 +93,10 @@ function sendBlockchainTransaction(
         (await sendAsync(provider, 'eth_estimateGas', tx))
       var sendTransaction
       if (privateKey) {
-        var transaction = { serialize() {} } /*new Transaction.Transaction(tx, {
-                    chain: parseInt(await sendAsync(provider, 'eth_chainId'))
-                });
-                transaction.sign(privateKey);*/
+        var transaction = Transaction.fromTxData(tx, {
+          chain: parseInt(await sendAsync(provider, 'eth_chainId'))
+        });
+        transaction.sign(privateKey);
         var serializedTx = '0x' + transaction.serialize().toString('hex')
         sendTransaction = sendAsync(
           provider,
