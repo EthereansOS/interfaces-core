@@ -25,7 +25,7 @@ export const Web3ContextProvider = (props) => {
         ...{
           [connector.id]: connector.settings
             ? connector.settings[activeChain]
-            : {},
+            : {}
         },
       }
     }
@@ -52,7 +52,12 @@ const Web3ContextInitializer = ({ children }) => {
   const afterInitFunctionList = usePlaceholder('web3/afterInit')
 
   useEffect(() => {
-    setState((s) => ({ ...s, wallet }))
+    console.log(wallet, wallet && wallet.ethereum);
+    setState((s) => ({ 
+      ...s,
+      wallet,
+      connectionStatus: wallet && wallet.ethereum ? CONNECTED : s.connectionStatus || NOT_CONNECTED
+    }))
   }, [wallet])
 
   useEffect(() => {
@@ -87,22 +92,20 @@ const Web3ContextInitializer = ({ children }) => {
     run()
   }, [afterInitFunctionList, context, initStatus, wallet.ethereum])
 
-  function disconnect() {
-    wallet && wallet.reset()
-    setState({
-      ...state,
-      connectionStatus: NOT_CONNECTED,
-    })
-  }
-
   const values = {
     ...methods,
     ...state,
     ethosEvents,
     context,
-    disconnect,
+    disconnect() {
+      wallet && wallet.reset()
+      setState((s) => ({
+        ...s,
+        wallet,
+        connectionStatus: NOT_CONNECTED,
+      }))
+    }
   }
-  wallet && wallet.ethereum && (values.connectionStatus = CONNECTED);
 
   return <Web3Context.Provider value={values}>{children}</Web3Context.Provider>
 }
