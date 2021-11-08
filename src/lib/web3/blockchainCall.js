@@ -30,7 +30,7 @@ async function blockchainCall() {
   try {
     from =
       from === VOID_ETHEREUM_ADDRESS
-        ? await getAddress(method._parent.currentProvider)
+        ? await getAddress({ provider: method._parent.currentProvider })
         : from
   } catch (e) {
     var data = args[args.length - 1]
