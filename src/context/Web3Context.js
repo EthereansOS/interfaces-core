@@ -58,6 +58,7 @@ const Web3ContextInitializer = ({ children }) => {
     connectionStatus,
     disconnect,
     ipfsHttpClient,
+    wallet,
     ...(wallet &&
       connectionStatus === CONNECTED && {
         account: wallet.account,
