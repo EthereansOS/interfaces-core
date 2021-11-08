@@ -85,7 +85,7 @@ Web3ContextInitializer.propTypes = {
   children: T.oneOfType([T.arrayOf(T.node), T.node]).isRequired,
 }
 
-export const webs3States = { NOT_CONNECTED, CONNECTED, CONNECTING }
+export const web3States = { NOT_CONNECTED, CONNECTED, CONNECTING }
 
 export const useWeb3 = () => {
   const web3Context = useContext(Web3Context)
