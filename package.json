@@ -20,7 +20,7 @@
     "docs:api:web3": "jsdoc2md src/lib/web3/*.js > docs/api/web3.md",
     "docs:api": "npm run docs:api:math && npm run docs:api:utils && npm run docs:api:web3",
     "docs": "docsify serve ./docs -p 3001",
-    "dist": "npm run lint:fix && git commit -a -m \"chore: wip\" && npm run build && npm version patch && npm publish && git push"
+    "dist": "npm run lint:fix && npm run build && git commit -a -m \"chore: wip\" && npm version patch && npm publish && git push"
   },
   "keywords": [],
   "author": "",
