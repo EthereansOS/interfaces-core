@@ -1,3 +1,5 @@
+import { utils } from 'ethers'
+
 export * from './context/GlobalContexts'
 export * from './hooks/usePlugins'
 export * from './hooks/usePrevious'
@@ -24,3 +26,5 @@ export {
   NOT_CONNECTED as WEB3_NOT_CONNECTED,
   UPDATING as WEB3_UPDATING,
 } from './lib/web3'
+
+export const abi = new utils.AbiCoder()
