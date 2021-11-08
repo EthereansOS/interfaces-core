@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect, useCallback } from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
+import Web3 from 'web3'
 
 import ethosEvents from '../lib/ethosEvents'
 import initWeb3, { NOT_CONNECTED, CONNECTED, CONNECTING } from '../lib/web3'
@@ -39,6 +40,9 @@ const Web3ContextInitializer = ({ children }) => {
     createIpfsHttpClient(context.ipfsHost)
   )
 
+  const [provider, setProvider] = useState(null)
+  const [web3Instance, setWeb3Instance] = useState(null)
+
   const disconnect = useCallback(() => {
     wallet && wallet.reset()
     setConnectionStatus(NOT_CONNECTED)
@@ -48,7 +52,12 @@ const Web3ContextInitializer = ({ children }) => {
     setConnectionStatus(
       wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
     )
+    setProvider((wallet && wallet.ethereum) || null)
   }, [wallet])
+
+  useEffect(() => {
+    setWeb3Instance(provider ? new Web3(provider) : null)
+  }, [provider])
 
   useEffect(() => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
@@ -59,12 +68,13 @@ const Web3ContextInitializer = ({ children }) => {
     disconnect,
     ipfsHttpClient,
     wallet,
+    provider,
+    web3: web3Instance,
     ...(wallet &&
       connectionStatus === CONNECTED && {
         account: wallet.account,
         chainId: wallet.chainId,
         chainName: wallet.networkName,
-        provider: wallet.ethereum,
       }),
   }
 
