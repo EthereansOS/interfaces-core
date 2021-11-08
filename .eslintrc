@@ -9,6 +9,7 @@
     "es6": true,
     "browser": true
   },
+  "ignorePatterns": ["src/lib/web3/ethereumjs-tx.min.js"],
   "rules": {
     "prettier/prettier": "error",
     "react/prop-types": 1,

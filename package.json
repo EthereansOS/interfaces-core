@@ -20,13 +20,12 @@
     "docs:api:web3": "jsdoc2md src/lib/web3/*.js > docs/api/web3.md",
     "docs:api": "npm run docs:api:math && npm run docs:api:utils && npm run docs:api:web3",
     "docs": "docsify serve ./docs -p 3001",
-    "dist": "npm run build && npm version patch && npm publish"
+    "dist": "npm run lint:fix && git commit -a -m \"chore: wip\" && npm run build && npm version patch && npm publish && git push"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@ethereumjs/tx": "^3.3.2",
     "@typescript-eslint/eslint-plugin": "4.29.0",
     "@typescript-eslint/parser": "4.29.0",
     "eth-ens-namehash": "^2.0.8",
