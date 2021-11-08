@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useCallback } from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
@@ -9,10 +9,6 @@ import { usePlaceholder } from '../hooks/usePlugins'
 import useEthosContext from '../hooks/useEthosContext'
 
 const Web3Context = React.createContext('web3')
-
-const WEB3_CONTEXT_STATUS_NEW = 'WEB3_CONTEXT_STATUS_NEW'
-const WEB3_CONTEXT_STATUS_ON_INIT = 'WEB3_CONTEXT_STATUS_ON_INIT'
-const WEB3_CONTEXT_STATUS_INIT = 'WEB3_CONTEXT_STATUS_INIT'
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
@@ -35,73 +31,40 @@ export const Web3ContextProvider = (props) => {
 }
 
 const Web3ContextInitializer = ({ children }) => {
-  const [initStatus, setInitStatus] = useState(WEB3_CONTEXT_STATUS_NEW)
-  const wallet = useWallet()
-  const [state, setState] = useState({
-    connectionStatus: NOT_CONNECTED,
-    wallet,
-  })
   const context = useEthosContext()
-  const [methods, setMethods] = useState({})
+  const wallet = useWallet()
 
-  const afterInitFunctionList = usePlaceholder('web3/afterInit')
+  const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
+  const [ipfsHttpClient, setIpfsHttpClient] = useState(
+    createIpfsHttpClient(context.ipfsHost)
+  )
 
-  useEffect(() => {
-    setState((s) => ({
-      ...s,
-      wallet,
-      connectionStatus:
-        wallet && wallet.ethereum
-          ? CONNECTED
-          : s.connectionStatus || NOT_CONNECTED,
-    }))
+  const disconnect = useCallback(() => {
+    wallet && wallet.reset()
+    setConnectionStatus(NOT_CONNECTED)
   }, [wallet])
 
   useEffect(() => {
-    setState((s) => ({
-      ...s,
-      ipfsHttpClient: createIpfsHttpClient(context.ipfsHost),
-    }))
-  }, [context])
+    setConnectionStatus(
+      wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
+    )
+  }, [wallet])
 
   useEffect(() => {
-    async function run() {
-      if (initStatus !== WEB3_CONTEXT_STATUS_NEW || !wallet.ethereum) {
-        return
-      }
-
-      setInitStatus(WEB3_CONTEXT_STATUS_ON_INIT)
-      const { onEthereumUpdate, connect: startUp } = initWeb3(
-        context,
-        setState,
-        wallet.ethereum
-      )
-
-      setMethods((s) => ({
-        ...s,
-        onEthereumUpdate,
-      }))
-
-      await startUp(afterInitFunctionList.map((item) => item.fn))
-      setInitStatus(WEB3_CONTEXT_STATUS_INIT)
-    }
-
-    run()
-  }, [afterInitFunctionList, context, initStatus, wallet.ethereum])
+    setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
+  }, [context])
 
   const values = {
-    ...methods,
-    ...state,
-    ethosEvents,
-    context,
-    disconnect() {
-      wallet && wallet.reset()
-      setState((s) => ({
-        ...s,
-        wallet,
-        connectionStatus: NOT_CONNECTED,
-      }))
-    },
+    connectionStatus,
+    disconnect,
+    ipfsHttpClient,
+    ...(wallet &&
+      connectionStatus === CONNECTED && {
+        account: wallet.account,
+        chainId: wallet.chainId,
+        chainName: wallet.networkName,
+        provider: wallet.ethereum,
+      }),
   }
 
   return <Web3Context.Provider value={values}>{children}</Web3Context.Provider>
