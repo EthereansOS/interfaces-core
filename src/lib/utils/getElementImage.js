@@ -1,6 +1,6 @@
 import formatLink from './formatLink'
 
-export default async function getElementImage({ context }, element) {
+export default function getElementImage({ context }, element) {
   if (!element || !element.metadataLink) {
     return context.defaultElementImage
   }
