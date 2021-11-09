@@ -91,6 +91,7 @@ export default async function tryRetrieveMetadata(
     (item.metadataLink = clearMetadata ? 'blank' : item.metadataLink)
   if (
     !clearMetadata &&
+    ethItemElementImages &&
     ethItemElementImages[item.address] &&
     !item.elementImageLoaded
   ) {
