@@ -55,7 +55,7 @@ export default async function tryRetrieveMetadata(
             )
           : await (
               await fetch(formatLink({ context }, item.metadataLink))
-            ).text()
+            ).json()
         if (typeof item.metadata !== 'string') {
           Object.entries(item.metadata).forEach((it) => {
             if (it[1] === undefined || it[1] === null) {
