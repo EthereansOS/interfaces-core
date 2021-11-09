@@ -33,13 +33,11 @@ export default async function tryRetrieveMetadata(
   }
   var clearMetadata = true
   try {
-    item.metadataLink = item.objectId
-      ? await blockchainCall(item.contract.methods.uri, item.objectId)
-      : await blockchainCall(item.contract.methods.uri)
-    item.objectId &&
-      (item.metadataLink = item.metadataLink
-        .split('0x{id}')
-        .join(item.objectId))
+    item.metadataLink = item.id
+      ? await blockchainCall(item.mainInterface.methods.uri, item.id)
+      : await blockchainCall(item.mainInterface.methods.uri)
+    item.id &&
+      (item.metadataLink = item.metadataLink.split('0x{id}').join(item.id))
     item.metadataLink =
       (metadatas && metadatas[item.address]) || item.metadataLink
     if (item.metadataLink !== '') {
@@ -79,7 +77,7 @@ export default async function tryRetrieveMetadata(
           item.collection
             ? context.openSeaItemLinkTemplate.format(
                 item.collection.address,
-                item.objectId
+                item.id
               )
             : context.openSeaCollectionLinkTemplate.format(item.address)
         }" target="_blank">Opensea</a>`
