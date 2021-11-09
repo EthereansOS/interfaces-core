@@ -11,7 +11,7 @@ export default async function tryRetrieveMetadata(
   item
 ) {
   if (item.metadataLink) {
-    return
+    return item
   }
   if (
     (context.pandorasBox &&
@@ -29,7 +29,7 @@ export default async function tryRetrieveMetadata(
   ) {
     item.metadataLink = 'blank'
     item.image = getElementImage({ context }, item)
-    return
+    return item
   }
   var clearMetadata = true
   try {
@@ -60,7 +60,7 @@ export default async function tryRetrieveMetadata(
           Object.entries(item.metadata).forEach((it) => {
             if (it[1] === undefined || it[1] === null) {
               delete item.metadata[it[0]]
-              return
+              return item
             }
             item[it[0]] = it[1]
           })
@@ -110,4 +110,5 @@ export default async function tryRetrieveMetadata(
       logoURI: item.image,
     })
   }
+  return item
 }
