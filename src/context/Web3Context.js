@@ -70,7 +70,7 @@ const Web3ContextInitializer = ({ children }) => {
   }, [context])
 
   useEffect(() => {
-    setContracts({})
+    setContracts(() => ({}))
     setGlobalContracts(globalContractNames.map(newContractByName))
   }, [chainId])
 
