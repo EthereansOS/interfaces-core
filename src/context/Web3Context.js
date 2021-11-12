@@ -64,7 +64,7 @@ const Web3ContextInitializer = ({ children }) => {
     setWeb3Instance(
       (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
     )
-  }, [web3Instance])
+  }, [wallet])
 
   useEffect(() => {
     setContracts(() => ({}))
