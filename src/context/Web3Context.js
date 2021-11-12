@@ -59,9 +59,6 @@ const Web3ContextInitializer = ({ children }) => {
     setConnectionStatus(
       wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
     )
-    setWeb3Instance(
-      (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
-    )
     setChainId((wallet && wallet.chainId) || null)
   }, [wallet])
 
@@ -70,6 +67,9 @@ const Web3ContextInitializer = ({ children }) => {
   }, [context])
 
   useEffect(() => {
+    setWeb3Instance(
+      (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
+    )
     setContracts(() => ({}))
     setGlobalContracts(() => globalContractNames.map(newContractByName))
   }, [chainId])
@@ -84,7 +84,8 @@ const Web3ContextInitializer = ({ children }) => {
     address = address ? web3Utils.toChecksumAddress(address) : ''
     var key = web3Utils.sha3(JSON.stringify(abi) + address)
     var contract = contracts[key]
-    contract = contract || new web3Instance.eth.Contract(abi, address)
+    contract =
+      contract || (web3Instance && new web3Instance.eth.Contract(abi, address))
     contract && setContracts((oldValue) => ({ ...oldValue, [key]: contract }))
     return contract
   }
