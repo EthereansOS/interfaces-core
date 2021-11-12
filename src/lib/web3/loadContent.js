@@ -11,14 +11,14 @@ import loadContentMetadata from './loadContentMetadata'
  * @param {Object} adapters - The adapters injected required by the function.
  * @param {web3} adapters.web3 - The web3 instance.
  * @param {EthosContext} adapters.context - The application context.
- * @param {string} adapters.networkId - The network id.
+ * @param {string} adapters.chainId - The network id.
  * @param tokenId
  * @param ocelotAddress
  * @param raw
  * @return {Promise<string>}
  */
 async function loadContent(
-  { web3, context, networkId },
+  { web3, context, chainId },
   tokenId,
   ocelotAddress,
   raw
@@ -28,7 +28,7 @@ async function loadContent(
     { web3 },
     context.OcelotAbi,
     !ocelotAddress || ocelotAddress === VOID_ETHEREUM_ADDRESS
-      ? getNetworkElement({ context, networkId }, 'defaultOcelotTokenAddress')
+      ? getNetworkElement({ context, chainId }, 'defaultOcelotTokenAddress')
       : ocelotAddress
   )
   const metadata = await loadContentMetadata({ context, web3 }, tokenId, ocelot)

@@ -7,13 +7,13 @@ import getNetworkElement from './getNetworkElement'
  * @param {web3} adapters.web3 - The web3 instance.
  * @param {web3} adapters.web3ForLogs - The web3 for log instancee.
  * @param {EthosContext} adapters.context - The application context.
- * @param {string} adapters.networkId - The network id.
+ * @param {string} adapters.chainId - The network id.
  * @param element
  * @param endOnFirstResult
  * @return {Promise<*>}
  */
 const getLogs = async function (
-  { web3, web3ForLogs, context, networkId },
+  { web3, web3ForLogs, context, chainId },
   element,
   endOnFirstResult
 ) {
@@ -21,7 +21,7 @@ const getLogs = async function (
   const logs = []
   args.fromBlock =
     args.fromBlock ||
-    getNetworkElement({ context, networkId }, 'deploySearchStart') + ''
+    getNetworkElement({ context, chainId }, 'deploySearchStart') + ''
   args.toBlock = args.toBlock || (await web3.eth.getBlockNumber()) + ''
   const to = parseInt(args.toBlock)
   const fillWithWeb3Logs = async function (logs, args) {

@@ -7,7 +7,7 @@ export const CONNECTED = 'connected'
 
 function initWeb3(context, setState, provider) {
   let web3
-  let networkId
+  let chainId
   let web3ForLogs
   // This is a map with all the contracts
   let proxyChangedTopic
@@ -28,7 +28,7 @@ function initWeb3(context, setState, provider) {
         {
           web3,
           web3ForLogs,
-          networkId,
+          chainId,
           proxyChangedTopic,
           uniswapV2Factory,
           uniswapV2Router,
@@ -47,7 +47,7 @@ function initWeb3(context, setState, provider) {
       }
 
       web3 = newState.web3
-      networkId = newState.networkId
+      chainId = newState.chainId
       web3ForLogs = newState.web3ForLogs
       proxyChangedTopic = newState.proxyChangedTopic
       uniswapV2Factory = newState.uniswapV2Factory

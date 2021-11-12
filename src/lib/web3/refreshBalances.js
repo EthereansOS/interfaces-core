@@ -12,7 +12,7 @@ import blockchainCall from './blockchainCall'
  * @param {Object} adapters - The adapters injected required by the function.
  * @param {web3} adapters.web3 - The web3 instance.
  * @param {EthosContext} adapters.context - The application context.
- * @param {string} adapters.networkId - The network id.
+ * @param {string} adapters.chainId - The network id.
  * @param {dfoHub} adapters.dfoHub - The DFOHub object.
  * @param {uniswapV2Router} adapters.uniswapV2Router - The uniswapV2Router
  * @param {walletAddress} adapters.walletAddress - The Wallet address

@@ -76,7 +76,7 @@
 <dt><a href="#getSupportedSolidityVersion">getSupportedSolidityVersion()</a> ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code></dt>
 <dd><p>Get supported solidity version</p>
 </dd>
-<dt><a href="#initConnection">initConnection(environment, onUpdate)</a> ⇒ <code>Promise.&lt;(void|{uniswapV2Factory: *, walletAvatar: (string|string), web3ForLogs: *, uniswapV2Router: *, wethAddress: *, web3: {currentProvider}, networkId: *, walletAddress: *, proxyChangedTopic: *})&gt;</code></dt>
+<dt><a href="#initConnection">initConnection(environment, onUpdate)</a> ⇒ <code>Promise.&lt;(void|{uniswapV2Factory: *, walletAvatar: (string|string), web3ForLogs: *, uniswapV2Router: *, wethAddress: *, web3: {currentProvider}, chainId: *, walletAddress: *, proxyChangedTopic: *})&gt;</code></dt>
 <dd><p>Initialize the connection</p>
 </dd>
 <dt><a href="#loadBlockSearchTranches">loadBlockSearchTranches(adapters)</a> ⇒ <code>Promise.&lt;Array&gt;</code></dt>
@@ -246,7 +246,7 @@ Deploy metadata link
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 | adapters.ipfsHttpClient | <code>IpfsHttpClient</code> | The ipfsHttpClient. |
 | metadata |  |  |
 | functionalitiesManager |  |  |
@@ -375,7 +375,7 @@ Get logs
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.web3ForLogs | <code>web3</code> | The web3 for log instancee. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 | element |  |  |
 | endOnFirstResult |  |  |
 
@@ -390,7 +390,7 @@ Get network element
 | --- | --- | --- |
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. * @param element |
+| adapters.chainId | <code>string</code> | The network id. * @param element |
 
 <a name="getNextFunctionalityVersion"></a>
 
@@ -429,7 +429,7 @@ Get supported solidity version
 **Kind**: global function  
 <a name="initConnection"></a>
 
-## initConnection(environment, onUpdate) ⇒ <code>Promise.&lt;(void\|{uniswapV2Factory: \*, walletAvatar: (string\|string), web3ForLogs: \*, uniswapV2Router: \*, wethAddress: \*, web3: {currentProvider}, networkId: \*, walletAddress: \*, proxyChangedTopic: \*})&gt;</code>
+## initConnection(environment, onUpdate) ⇒ <code>Promise.&lt;(void\|{uniswapV2Factory: \*, walletAvatar: (string\|string), web3ForLogs: \*, uniswapV2Router: \*, wethAddress: \*, web3: {currentProvider}, chainId: \*, walletAddress: \*, proxyChangedTopic: \*})&gt;</code>
 Initialize the connection
 
 **Kind**: global function  
@@ -451,7 +451,7 @@ Load block search trances
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 
 <a name="loadContent"></a>
 
@@ -465,7 +465,7 @@ Load content
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 | tokenId |  |  |
 | ocelotAddress |  |  |
 | raw |  |  |
@@ -497,7 +497,7 @@ Load functionality
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 | functionalityName |  |  |
 | organization |  |  |
 
@@ -539,7 +539,7 @@ Load Off Chain wallets
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 
 <a name="loadTokenInfos"></a>
 
@@ -568,7 +568,7 @@ Mint
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 | adapters.ethosEvents | <code>ethosEvents</code> | The pub sub event manager. |
 | inputs |  |  |
 | ocelotAddress |  |  |
@@ -604,7 +604,7 @@ Refresh balances
 | adapters | <code>Object</code> | The adapters injected required by the function. |
 | adapters.web3 | <code>web3</code> | The web3 instance. |
 | adapters.context | <code>EthosContext</code> | The application context. |
-| adapters.networkId | <code>string</code> | The network id. |
+| adapters.chainId | <code>string</code> | The network id. |
 | adapters.dfoHub | <code>dfoHub</code> | The DFOHub object. |
 | adapters.uniswapV2Router | <code>uniswapV2Router</code> | The uniswapV2Router |
 | adapters.walletAddress | <code>walletAddress</code> | The Wallet address |

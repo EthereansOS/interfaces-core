@@ -62,7 +62,7 @@ It provides:
   - an `onEthereumUpdate` function to listen to changes
   - all the details of the current connection:
     - web3
-    - networkId
+    - chainId
     - web3ForLogs
     - allContracts
     - proxyChangedTopic

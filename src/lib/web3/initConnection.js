@@ -9,11 +9,11 @@ import blockchainCall from './blockchainCall'
  * Initialize the connection
  * @param environment
  * @param onUpdate
- * @return {Promise<void|{uniswapV2Factory: *, walletAvatar: string | string, web3ForLogs: *, uniswapV2Router: *, wethAddress: *, web3: {currentProvider}, networkId: *, walletAddress: *, proxyChangedTopic: *}>}
+ * @return {Promise<void|{uniswapV2Factory: *, walletAvatar: string | string, web3ForLogs: *, uniswapV2Router: *, wethAddress: *, web3: {currentProvider}, chainId: *, walletAddress: *, proxyChangedTopic: *}>}
  */
 async function initConnection(environment, onUpdate, provider) {
   const { context } = environment
-  let networkId = environment.networkId
+  let chainId = environment.chainId
   let web3 = environment.web3
   let web3ForLogs = environment.web3ForLogs
   let uniswapV2Factory = environment.uniswapV2Factory
@@ -23,7 +23,7 @@ async function initConnection(environment, onUpdate, provider) {
   let walletAvatar = environment.walletAvatar
   let proxyChangedTopic = environment.proxyChangedTopic
 
-  if (!networkId || networkId !== parseInt(provider.chainId)) {
+  if (!chainId || chainId !== parseInt(provider.chainId)) {
     resetContracts()
 
     provider &&
@@ -46,14 +46,14 @@ async function initConnection(environment, onUpdate, provider) {
       provider.on('chainChanged', onUpdate)
 
     web3 = await createWeb3(provider)
-    networkId = await web3.eth.net.getId()
+    chainId = await web3.eth.net.getId()
     web3ForLogs = await createWeb3(
       getNetworkElement(
-        { context, networkId },
+        { context, chainId },
         'blockchainConnectionForLogString'
       ) || web3.currentProvider
     )
-    const network = context.ethereumNetwork[networkId]
+    const network = context.ethereumNetwork[chainId]
     if (network === undefined || network === null) {
       return alert('This network is actually not supported!')
     }
@@ -93,7 +93,7 @@ async function initConnection(environment, onUpdate, provider) {
 
   return {
     web3,
-    networkId,
+    chainId,
     web3ForLogs,
     proxyChangedTopic,
     uniswapV2Factory,

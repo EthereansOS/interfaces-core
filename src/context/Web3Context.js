@@ -3,13 +3,17 @@ import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
 import Web3 from 'web3'
+import web3Utils from 'web3-utils'
 
-import ethosEvents from '../lib/ethosEvents'
-import initWeb3, { NOT_CONNECTED, CONNECTED, CONNECTING } from '../lib/web3'
-import { usePlaceholder } from '../hooks/usePlugins'
+import getNetworkElement from '../lib/web3/getNetworkElement'
+import { NOT_CONNECTED, CONNECTED, CONNECTING } from '../lib/web3'
 import useEthosContext from '../hooks/useEthosContext'
 
 const Web3Context = React.createContext('web3')
+
+export const web3States = { NOT_CONNECTED, CONNECTED, CONNECTING }
+
+export const useWeb3 = () => useContext(Web3Context)
 
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
@@ -18,7 +22,10 @@ export const Web3ContextProvider = (props) => {
     (acc, connector) => ({
       ...acc,
       ...{
-        [connector.id]: connector.settings || {},
+        [connector.id]: {
+          ...connector.settings,
+          buttonText: connector.buttonText,
+        },
       },
     }),
     {}
@@ -33,7 +40,7 @@ export const Web3ContextProvider = (props) => {
 
 const Web3ContextInitializer = ({ children }) => {
   const context = useEthosContext()
-  const wallet = useWallet()
+  const { wallet, connectors } = useWallet()
 
   const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
   const [ipfsHttpClient, setIpfsHttpClient] = useState(
@@ -42,18 +49,20 @@ const Web3ContextInitializer = ({ children }) => {
 
   const [provider, setProvider] = useState(null)
   const [web3Instance, setWeb3Instance] = useState(null)
+  const [chainId, setChainId] = useState(null)
 
-  const disconnect = useCallback(() => {
-    wallet && wallet.reset()
-    setConnectionStatus(NOT_CONNECTED)
-  }, [wallet])
+  const [globalContractNames, setGlobalContractNames] = useState([])
+  const [globalContracts, setGlobalContracts] = useState([])
+
+  const [contracts, setContracts] = useState({})
 
   useEffect(() => {
     setConnectionStatus(
       wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
     )
     setProvider((wallet && wallet.ethereum) || null)
-  }, [wallet])
+    setChainId((wallet && wallet.chainId) || null)
+  }, [wallet, connectionStatus])
 
   useEffect(() => {
     setWeb3Instance(provider ? new Web3(provider) : null)
@@ -63,31 +72,89 @@ const Web3ContextInitializer = ({ children }) => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
   }, [context])
 
-  const values = {
+  useEffect(() => {
+    setContracts({})
+    setGlobalContracts(globalContractNames.map(newContractByName))
+  }, [chainId])
+
+  const connect = useCallback(
+    (connectorId) => {
+      setConnectionStatus(CONNECTING)
+      wallet.connect(connectorId)
+    },
+    [wallet]
+  )
+
+  const disconnect = useCallback(() => {
+    wallet && wallet.reset()
+    setConnectionStatus(NOT_CONNECTED)
+  }, [wallet])
+
+  const newContract = useCallback(
+    (abi, address) => {
+      address = address ? web3Utils.toChecksumAddress(address) : ''
+      var key = web3Utils.sha3(JSON.stringify(abi) + address)
+      var contract = contracts[key]
+      contract = contract || new web3Instance.eth.Contract(abi, address)
+      contract && setContracts((oldValue) => ({ ...oldValue, [key]: contract }))
+      return contract
+    },
+    [contracts, web3Instance, setContracts]
+  )
+
+  const newContractByName = useCallback(
+    (contractName) =>
+      newContract(
+        context[
+          contractName[0].toUpperCase() + contractName.substring(1) + 'ABI'
+        ],
+        getNetworkElement({ context, chainId }, contractName + 'Address')
+      ),
+    [context, chainId, newContract]
+  )
+
+  const getGlobalContract = useCallback(
+    (contractName) => {
+      var index = globalContractNames.indexOf(contractName)
+      if (index === -1) {
+        var contract = newContractByName(contractName)
+        contract && setGlobalContracts((oldValue) => [...oldValue, contract])
+        contract &&
+          setGlobalContractNames((oldValue) => [...oldValue, contractName])
+        return contract
+      }
+      return globalContracts[index]
+    },
+    [
+      globalContractNames,
+      globalContracts,
+      setGlobalContracts,
+      setGlobalContractNames,
+      newContractByName,
+    ]
+  )
+
+  const value = {
     connectionStatus,
-    disconnect,
+    ...(connectionStatus === NOT_CONNECTED && { connect }),
+    connectors,
     ipfsHttpClient,
-    wallet,
-    provider,
-    web3: web3Instance,
     ...(wallet &&
       connectionStatus === CONNECTED && {
+        disconnect,
         account: wallet.account,
-        chainId: wallet.chainId,
+        chainId,
         chainName: wallet.networkName,
+        provider,
+        web3: web3Instance,
+        getGlobalContract,
+        newContract,
       }),
   }
 
-  return <Web3Context.Provider value={values}>{children}</Web3Context.Provider>
+  return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>
 }
 
 Web3ContextInitializer.propTypes = {
   children: T.oneOfType([T.arrayOf(T.node), T.node]).isRequired,
-}
-
-export const web3States = { NOT_CONNECTED, CONNECTED, CONNECTING }
-
-export const useWeb3 = () => {
-  const web3Context = useContext(Web3Context)
-  return web3Context
 }

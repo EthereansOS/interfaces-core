@@ -8,13 +8,13 @@ import getNetworkElement from './getNetworkElement'
  * @param {Object} adapters - The adapters injected required by the function.
  * @param {web3} adapters.web3 - The web3 instance.
  * @param {EthosContext} adapters.context - The application context.
- * @param {string} adapters.networkId - The network id.
+ * @param {string} adapters.chainId - The network id.
  * @return {Promise<Array>}
  */
-async function loadBlockSearchTranches({ web3, context, networkId }) {
+async function loadBlockSearchTranches({ web3, context, chainId }) {
   var startBlock = parseInt(
     numberToString(
-      getNetworkElement({ context, networkId }, 'deploySearchStart') || '0'
+      getNetworkElement({ context, chainId }, 'deploySearchStart') || '0'
     )
   )
   var endBlock = parseInt(numberToString(await web3.eth.getBlockNumber()))

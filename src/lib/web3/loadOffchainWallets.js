@@ -34,10 +34,10 @@ async function loadLogoWork({ context }, token) {
  * @param {Object} adapters - The adapters injected required by the function.
  * @param {web3} adapters.web3 - The web3 instance.
  * @param {EthosContext} adapters.context - The application context.
- * @param {string} adapters.networkId - The network id.
+ * @param {string} adapters.chainId - The network id.
  * @return {Promise<{'Programmable Equities': T[], Items: T[], Indexes: T[], Tokens: T[]}>}
  */
-async function loadOffChainWallets({ web3, context, networkId }) {
+async function loadOffChainWallets({ web3, context, chainId }) {
   if (context.bypassTokens) {
     return
   }
@@ -46,7 +46,7 @@ async function loadOffChainWallets({ web3, context, networkId }) {
   )
 
   const filter = (it) =>
-    it.chainId === networkId &&
+    it.chainId === chainId &&
     context.outOfStandardTokens.indexOf(
       web3Utils.toChecksumAddress(it.address)
     ) === -1
@@ -58,7 +58,7 @@ async function loadOffChainWallets({ web3, context, networkId }) {
   const reqs = [
     fetch(
       getNetworkElement(
-        { context, networkId },
+        { context, chainId },
         'decentralizedFlexibleOrganizationsURL'
       )
     ),

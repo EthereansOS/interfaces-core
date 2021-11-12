@@ -12,7 +12,7 @@ import useEthosContext from '../hooks/useEthosContext'
 import { useIsUnmounted } from './useIsUnmounted'
 
 export function useLoadUniswapPairs(address, secondToken) {
-  const { networkId, web3, web3ForLogs } = useWeb3()
+  const { chainId, web3, web3ForLogs } = useWeb3()
   const context = useEthosContext()
 
   const [uniswapPairs, setUniswapPairs] = useState([])
@@ -33,7 +33,7 @@ export function useLoadUniswapPairs(address, secondToken) {
       let blockSearchTranches = await loadBlockSearchTranches({
         web3,
         context,
-        networkId,
+        chainId,
       })
 
       let subArrays
@@ -46,7 +46,7 @@ export function useLoadUniswapPairs(address, secondToken) {
             await fetch(context.uniswapTokensURL)
           )
             .json()
-            ?.tokens.filter((it) => it.chainId === networkId)
+            ?.tokens.filter((it) => it.chainId === chainId)
             .map((it) => web3.eth.abi.encodeParameter('address', it.address)),
           500
         )
@@ -81,7 +81,7 @@ export function useLoadUniswapPairs(address, secondToken) {
             logArgs.topics.push(myToken)
           }
           const logs = await getLogs(
-            { web3, web3ForLogs, context, networkId },
+            { web3, web3ForLogs, context, chainId },
             logArgs
           )
 
@@ -89,7 +89,7 @@ export function useLoadUniswapPairs(address, secondToken) {
             logArgs.topics = [logArgs.topics[0], [], myToken]
             logs.push(
               ...(await getLogs(
-                { web3, web3ForLogs, context, networkId },
+                { web3, web3ForLogs, context, chainId },
                 logArgs
               ))
             )
@@ -151,7 +151,7 @@ export function useLoadUniswapPairs(address, secondToken) {
     if (address) {
       load()
     }
-  }, [address, context, networkId, secondToken, unmounted, web3, web3ForLogs])
+  }, [address, context, chainId, secondToken, unmounted, web3, web3ForLogs])
 
   return uniswapPairs
 }

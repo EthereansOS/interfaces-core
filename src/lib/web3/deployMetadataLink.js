@@ -9,14 +9,14 @@ import { createContract } from './contracts'
  * @param {Object} adapters - The adapters injected required by the function.
  * @param {web3} adapters.web3 - The web3 instance.
  * @param {EthosContext} adapters.context - The application context.
- * @param {string} adapters.networkId - The network id.
+ * @param {string} adapters.chainId - The network id.
  * @param {IpfsHttpClient} adapters.ipfsHttpClient - The ipfsHttpClient.
  * @param metadata
  * @param functionalitiesManager
  * @return {Promise<*>}
  */
 async function deployMetadataLink(
-  { web3, context, networkId, ipfsHttpClient },
+  { web3, context, chainId, ipfsHttpClient },
   metadata,
   functionalitiesManager
 ) {
@@ -84,9 +84,9 @@ contract GetStringValue {
     selectedContract.abi,
     selectedContract.bytecode,
     functionalitiesManager,
-    getNetworkElement({ context, networkId }, 'defaultOcelotTokenAddress'),
+    getNetworkElement({ context, chainId }, 'defaultOcelotTokenAddress'),
     getNetworkElement(
-      { context, networkId },
+      { context, chainId },
       'deployMetadataLinkSourceLocationId'
     ),
     metadataLink,
