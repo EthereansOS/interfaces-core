@@ -1,7 +1,4 @@
-export default function shortenWord(
-  { context, charsAmount, shortenWordSuffix },
-  word
-) {
+export default function truncatedWord({ context, charsAmount }, word) {
   charsAmount = charsAmount || (context && context.defaultCharsAmount) || 4
   if (!word) {
     return ''
