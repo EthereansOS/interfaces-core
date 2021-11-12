@@ -40,39 +40,36 @@ export const Web3ContextProvider = (props) => {
 
 const Web3ContextInitializer = ({ children }) => {
   const context = useEthosContext()
-  const wallet = useWallet()
 
-  const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
   const [ipfsHttpClient, setIpfsHttpClient] = useState(
     createIpfsHttpClient(context.ipfsHost)
   )
 
+  const wallet = useWallet()
+  const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
   const [web3Instance, setWeb3Instance] = useState(null)
-  const [chainId, setChainId] = useState(null)
 
   const [globalContractNames, setGlobalContractNames] = useState([])
   const [globalContracts, setGlobalContracts] = useState([])
-
   const [contracts, setContracts] = useState({})
-
-  useEffect(() => {
-    setConnectionStatus(
-      wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
-    )
-    setChainId((wallet && wallet.chainId) || null)
-  }, [wallet])
 
   useEffect(() => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
   }, [context])
 
   useEffect(() => {
+    setConnectionStatus(
+      wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
+    )
     setWeb3Instance(
       (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
     )
+  }, [web3Instance])
+
+  useEffect(() => {
     setContracts(() => ({}))
     setGlobalContracts(() => globalContractNames.map(newContractByName))
-  }, [chainId])
+  }, [web3Instance])
 
   const setConnector = (connector) => {
     setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
@@ -95,7 +92,10 @@ const Web3ContextInitializer = ({ children }) => {
       context[
         contractName[0].toUpperCase() + contractName.substring(1) + 'ABI'
       ],
-      getNetworkElement({ context, chainId }, contractName + 'Address')
+      getNetworkElement(
+        { context, chainId: wallet.chainId },
+        contractName + 'Address'
+      )
     )
 
   const getGlobalContract = (contractName) => {
@@ -120,7 +120,7 @@ const Web3ContextInitializer = ({ children }) => {
     ...(wallet &&
       connectionStatus === CONNECTED && {
         account: wallet.account,
-        chainId,
+        chainId: wallet.chainId,
         chainName: wallet.networkName,
         web3: web3Instance,
         getGlobalContract,
