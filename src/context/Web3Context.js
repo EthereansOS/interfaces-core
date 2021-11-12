@@ -49,6 +49,7 @@ const Web3ContextInitializer = ({ children }) => {
   const wallet = useWallet()
   const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
   const [web3Instance, setWeb3Instance] = useState(null)
+  const [chainId, setChainId] = useState(null)
 
   const [globalContractNames, setGlobalContractNames] = useState([])
   const [globalContracts, setGlobalContracts] = useState([])
@@ -73,7 +74,8 @@ const Web3ContextInitializer = ({ children }) => {
   useEffect(() => {
     setContracts({})
     setGlobalContracts(globalContractNames.map(newContractByName))
-  }, [wallet.chainId])
+    setChainId((wallet && wallet.chainId) || null)
+  }, [wallet && wallet.chainId])
 
   const setConnector = (connector) => {
     setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
@@ -124,7 +126,7 @@ const Web3ContextInitializer = ({ children }) => {
     ...(wallet &&
       connectionStatus === CONNECTED && {
         account: wallet.account,
-        chainId: wallet.chainId,
+        chainId: chainId,
         chainName: wallet.networkName,
         web3: web3Instance,
         getGlobalContract,
