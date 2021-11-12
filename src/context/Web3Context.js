@@ -5,6 +5,7 @@ import { UseWalletProvider, useWallet } from 'use-wallet'
 import Web3 from 'web3'
 import web3Utils from 'web3-utils'
 
+import sendAsync from '../lib/web3/sendAsync'
 import getNetworkElement from '../lib/web3/getNetworkElement'
 import { NOT_CONNECTED, CONNECTED, CONNECTING } from '../lib/web3'
 import useEthosContext from '../hooks/useEthosContext'
@@ -48,6 +49,7 @@ const Web3ContextInitializer = ({ children }) => {
   const wallet = useWallet()
   const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
   const [web3Instance, setWeb3Instance] = useState(null)
+  const [chainId, setChainId] = useState(null)
 
   const [globalContractNames, setGlobalContractNames] = useState([])
   const [globalContracts, setGlobalContracts] = useState([])
@@ -61,14 +63,27 @@ const Web3ContextInitializer = ({ children }) => {
     setConnectionStatus(
       wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
     )
-    setWeb3Instance(
-      (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
-    )
+    if (web3Instance && wallet) {
+      setTimeout(async () => {
+        var web3ChainId = parseInt(
+          await sendAsync(web3Instance.currentProvider, 'eth_chainId')
+        )
+        web3ChainId !== wallet.chainId &&
+          setWeb3Instance(
+            (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
+          )
+      })
+    } else {
+      setWeb3Instance(
+        (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
+      )
+    }
   }, [wallet])
 
   useEffect(() => {
-    setContracts(() => ({}))
-    setGlobalContracts(() => globalContractNames.map(newContractByName))
+    setContracts({})
+    setGlobalContracts(globalContractNames.map(newContractByName))
+    setChainId(wallet.chainId)
   }, [web3Instance])
 
   const setConnector = (connector) => {
@@ -120,7 +135,7 @@ const Web3ContextInitializer = ({ children }) => {
     ...(wallet &&
       connectionStatus === CONNECTED && {
         account: wallet.account,
-        chainId: wallet.chainId,
+        chainId,
         chainName: wallet.networkName,
         web3: web3Instance,
         getGlobalContract,
