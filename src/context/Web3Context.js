@@ -47,7 +47,6 @@ const Web3ContextInitializer = ({ children }) => {
     createIpfsHttpClient(context.ipfsHost)
   )
 
-  const [provider, setProvider] = useState(null)
   const [web3Instance, setWeb3Instance] = useState(null)
   const [chainId, setChainId] = useState(null)
 
@@ -60,13 +59,11 @@ const Web3ContextInitializer = ({ children }) => {
     setConnectionStatus(
       wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
     )
-    setProvider((wallet && wallet.ethereum) || null)
+    setWeb3Instance(
+      (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
+    )
     setChainId((wallet && wallet.chainId) || null)
   }, [wallet])
-
-  useEffect(() => {
-    setWeb3Instance(provider ? new Web3(provider) : null)
-  }, [provider])
 
   useEffect(() => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
@@ -77,58 +74,40 @@ const Web3ContextInitializer = ({ children }) => {
     setGlobalContracts(globalContractNames.map(newContractByName))
   }, [chainId])
 
-  const setConnector = useCallback(
-    (connector) => {
-      setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
-      wallet && connector && wallet.connect(connector.id)
-      wallet && !connector && wallet.reset()
-    },
-    [wallet]
-  )
+  const setConnector = (connector) => {
+    setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
+    wallet && connector && wallet.connect(connector.id)
+    wallet && !connector && wallet.reset()
+  }
 
-  const newContract = useCallback(
-    (abi, address) => {
-      address = address ? web3Utils.toChecksumAddress(address) : ''
-      var key = web3Utils.sha3(JSON.stringify(abi) + address)
-      var contract = contracts[key]
-      contract = contract || new web3Instance.eth.Contract(abi, address)
-      contract && setContracts((oldValue) => ({ ...oldValue, [key]: contract }))
+  const newContract = (abi, address) => {
+    address = address ? web3Utils.toChecksumAddress(address) : ''
+    var key = web3Utils.sha3(JSON.stringify(abi) + address)
+    var contract = contracts[key]
+    contract = contract || new web3Instance.eth.Contract(abi, address)
+    contract && setContracts((oldValue) => ({ ...oldValue, [key]: contract }))
+    return contract
+  }
+
+  const newContractByName = (contractName) =>
+    newContract(
+      context[
+        contractName[0].toUpperCase() + contractName.substring(1) + 'ABI'
+      ],
+      getNetworkElement({ context, chainId }, contractName + 'Address')
+    )
+
+  const getGlobalContract = (contractName) => {
+    var index = globalContractNames.indexOf(contractName)
+    if (index === -1) {
+      var contract = newContractByName(contractName)
+      contract && setGlobalContracts((oldValue) => [...oldValue, contract])
+      contract &&
+        setGlobalContractNames((oldValue) => [...oldValue, contractName])
       return contract
-    },
-    [contracts, web3Instance, setContracts]
-  )
-
-  const newContractByName = useCallback(
-    (contractName) =>
-      newContract(
-        context[
-          contractName[0].toUpperCase() + contractName.substring(1) + 'ABI'
-        ],
-        getNetworkElement({ context, chainId }, contractName + 'Address')
-      ),
-    [context, chainId, newContract]
-  )
-
-  const getGlobalContract = useCallback(
-    (contractName) => {
-      var index = globalContractNames.indexOf(contractName)
-      if (index === -1) {
-        var contract = newContractByName(contractName)
-        contract && setGlobalContracts((oldValue) => [...oldValue, contract])
-        contract &&
-          setGlobalContractNames((oldValue) => [...oldValue, contractName])
-        return contract
-      }
-      return globalContracts[index]
-    },
-    [
-      globalContractNames,
-      globalContracts,
-      setGlobalContracts,
-      setGlobalContractNames,
-      newContractByName,
-    ]
-  )
+    }
+    return globalContracts[index]
+  }
 
   const value = {
     connectionStatus,
@@ -142,7 +121,6 @@ const Web3ContextInitializer = ({ children }) => {
         account: wallet.account,
         chainId,
         chainName: wallet.networkName,
-        provider,
         web3: web3Instance,
         getGlobalContract,
         newContract,
