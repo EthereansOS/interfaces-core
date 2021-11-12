@@ -62,7 +62,7 @@ const Web3ContextInitializer = ({ children }) => {
     )
     setProvider((wallet && wallet.ethereum) || null)
     setChainId((wallet && wallet.chainId) || null)
-  }, [wallet, connectionStatus])
+  }, [wallet])
 
   useEffect(() => {
     setWeb3Instance(provider ? new Web3(provider) : null)
