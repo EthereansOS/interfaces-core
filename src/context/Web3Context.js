@@ -49,7 +49,6 @@ const Web3ContextInitializer = ({ children }) => {
   const wallet = useWallet()
   const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
   const [web3Instance, setWeb3Instance] = useState(null)
-  const [chainId, setChainId] = useState(null)
 
   const [globalContractNames, setGlobalContractNames] = useState([])
   const [globalContracts, setGlobalContracts] = useState([])
@@ -63,28 +62,18 @@ const Web3ContextInitializer = ({ children }) => {
     setConnectionStatus(
       wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
     )
-    if (web3Instance && wallet) {
-      setTimeout(async () => {
-        var web3ChainId = parseInt(
-          await sendAsync(web3Instance.currentProvider, 'eth_chainId')
-        )
-        web3ChainId !== wallet.chainId &&
-          setWeb3Instance(
-            (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
-          )
-      })
-    } else {
-      setWeb3Instance(
-        (wallet && wallet.ethereum && new Web3(wallet.ethereum)) || null
-      )
-    }
+    setWeb3Instance(
+      (wallet &&
+        wallet.ethereum &&
+        (web3Instance || new Web3(wallet.ethereum))) ||
+        null
+    )
   }, [wallet])
 
   useEffect(() => {
     setContracts({})
     setGlobalContracts(globalContractNames.map(newContractByName))
-    setChainId(wallet.chainId)
-  }, [web3Instance])
+  }, [wallet.chainId])
 
   const setConnector = (connector) => {
     setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
@@ -135,7 +124,7 @@ const Web3ContextInitializer = ({ children }) => {
     ...(wallet &&
       connectionStatus === CONNECTED && {
         account: wallet.account,
-        chainId,
+        chainId: wallet.chainId,
         chainName: wallet.networkName,
         web3: web3Instance,
         getGlobalContract,
