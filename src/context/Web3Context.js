@@ -40,7 +40,7 @@ export const Web3ContextProvider = (props) => {
 
 const Web3ContextInitializer = ({ children }) => {
   const context = useEthosContext()
-  const { wallet, connectors } = useWallet()
+  const wallet = useWallet()
 
   const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
   const [ipfsHttpClient, setIpfsHttpClient] = useState(
@@ -133,7 +133,7 @@ const Web3ContextInitializer = ({ children }) => {
   const value = {
     connectionStatus,
     setConnector,
-    connectors: Object.entries(connectors)
+    connectors: Object.entries(wallet.connectors)
       .filter((it) => it[1][1])
       .map((it) => ({ id: it[0], ...it[1][1] })),
     ipfsHttpClient,
