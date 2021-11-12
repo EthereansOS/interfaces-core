@@ -78,9 +78,9 @@ const Web3ContextInitializer = ({ children }) => {
   }, [chainId])
 
   const connect = useCallback(
-    (connectorId) => {
+    (connector) => {
       setConnectionStatus(CONNECTING)
-      wallet.connect(connectorId)
+      wallet.connect(connector.id)
     },
     [wallet]
   )
