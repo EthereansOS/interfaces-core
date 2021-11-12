@@ -61,7 +61,11 @@ const Web3ContextInitializer = ({ children }) => {
 
   useEffect(() => {
     setConnectionStatus(
-      wallet && wallet.ethereum ? CONNECTED : connectionStatus || NOT_CONNECTED
+      wallet && wallet.ethereum
+        ? CONNECTED
+        : connectionStatus === CONNECTING
+        ? CONNECTING
+        : NOT_CONNECTED
     )
     setWeb3Instance(
       (wallet &&
