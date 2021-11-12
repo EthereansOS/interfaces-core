@@ -137,7 +137,9 @@ const Web3ContextInitializer = ({ children }) => {
   const value = {
     connectionStatus,
     ...(connectionStatus === NOT_CONNECTED && { connect }),
-    connectors,
+    connectors: Object.entries(connectors)
+      .filter((it) => it[1][1])
+      .map((it) => ({ id: it[0], ...it[1][1] })),
     ipfsHttpClient,
     ...(wallet &&
       connectionStatus === CONNECTED && {
@@ -150,6 +152,7 @@ const Web3ContextInitializer = ({ children }) => {
         getGlobalContract,
         newContract,
       }),
+    ...(wallet && wallet.error && { errorMessage: wallet.error.message }),
   }
 
   return <Web3Context.Provider value={value}>{children}</Web3Context.Provider>
