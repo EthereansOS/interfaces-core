@@ -77,18 +77,14 @@ const Web3ContextInitializer = ({ children }) => {
     setGlobalContracts(globalContractNames.map(newContractByName))
   }, [chainId])
 
-  const connect = useCallback(
+  const setConnector = useCallback(
     (connector) => {
-      setConnectionStatus(CONNECTING)
-      wallet.connect(connector.id)
+      setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
+      wallet && connector && wallet.connect(connector.id)
+      wallet && !connector && wallet.reset()
     },
     [wallet]
   )
-
-  const disconnect = useCallback(() => {
-    wallet && wallet.reset()
-    setConnectionStatus(NOT_CONNECTED)
-  }, [wallet])
 
   const newContract = useCallback(
     (abi, address) => {
@@ -136,14 +132,13 @@ const Web3ContextInitializer = ({ children }) => {
 
   const value = {
     connectionStatus,
-    ...(connectionStatus === NOT_CONNECTED && { connect }),
+    setConnector,
     connectors: Object.entries(connectors)
       .filter((it) => it[1][1])
       .map((it) => ({ id: it[0], ...it[1][1] })),
     ipfsHttpClient,
     ...(wallet &&
       connectionStatus === CONNECTED && {
-        disconnect,
         account: wallet.account,
         chainId,
         chainName: wallet.networkName,
