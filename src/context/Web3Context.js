@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
