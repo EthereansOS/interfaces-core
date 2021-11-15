@@ -179,6 +179,8 @@ export default async function uploadMetadata(
     { context, ipfsHttpClient },
     metadata
   )
+
   await normalizeMetadata(cleanMetadata)
+
   return await uploadToIPFS({ context, ipfsHttpClient }, cleanMetadata)
 }
