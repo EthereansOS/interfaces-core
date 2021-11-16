@@ -84,11 +84,6 @@ const Web3ContextInitializer = ({ children }) => {
   const setConnector = (connector) => {
     setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
     wallet && connector && wallet.connect(connector.id)
-    wallet && !connector && setContracts({})
-    wallet &&
-      !connector &&
-      setGlobalContracts(globalContractNames.map(newContractByName))
-    wallet && !connector && setChainId((wallet && wallet.chainId) || null)
     wallet && !connector && wallet.reset()
   }
 
@@ -115,11 +110,17 @@ const Web3ContextInitializer = ({ children }) => {
 
   const getGlobalContract = (contractName) => {
     var index = globalContractNames.indexOf(contractName)
-    if (index === -1) {
+    if (index === -1 || !globalContracts[index]) {
       var contract = newContractByName(contractName)
-      contract && setGlobalContracts((oldValue) => [...oldValue, contract])
-      contract &&
-        setGlobalContractNames((oldValue) => [...oldValue, contractName])
+      if (index === -1) {
+        contract && setGlobalContracts((oldValue) => [...oldValue, contract])
+        contract &&
+          setGlobalContractNames((oldValue) => [...oldValue, contractName])
+      } else if (contract) {
+        var newGlobalContracts = [...globalContracts]
+        newGlobalContracts[index] = contract
+        setGlobalContracts(() => newGlobalContracts)
+      }
       return contract
     }
     return globalContracts[index]
