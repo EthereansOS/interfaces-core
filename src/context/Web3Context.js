@@ -75,6 +75,12 @@ const Web3ContextInitializer = ({ children }) => {
     )
   }, [wallet])
 
+  useEffect(() => {
+    setContracts({})
+    setGlobalContracts(globalContractNames.map(newContractByName))
+    setChainId((wallet && wallet.chainId) || null)
+  }, [wallet && wallet.chainId])
+
   const setConnector = (connector) => {
     setConnectionStatus(connector ? CONNECTING : NOT_CONNECTED)
     wallet && connector && wallet.connect(connector.id)
