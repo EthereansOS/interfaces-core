@@ -35,12 +35,12 @@ export default async function tryRetrieveMetadata(
   try {
     item.metadataLink = item.id
       ? await blockchainCall(
-          item.mainInterface.methods[
+          (item.mainInterface || item.contract).methods[
             item.id.startsWith('0x') ? 'collectionUri' : 'uri'
           ],
           item.id
         )
-      : await blockchainCall(item.mainInterface.methods.uri)
+      : await blockchainCall((item.mainInterface || item.contract).methods.uri)
     item.id &&
       (item.metadataLink = item.metadataLink.split('0x{id}').join(item.id))
     item.metadataLink =
