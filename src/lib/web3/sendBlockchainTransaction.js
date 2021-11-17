@@ -77,7 +77,7 @@ function sendBlockchainTransaction(
         )
       }
 
-      tx.gasLimit = window.bypassEstimation
+      tx.gasLimit = !window.bypassEstimation
         ? tx.gasLimit
         : web3.utils.toHex(
             web3.utils
@@ -89,7 +89,7 @@ function sendBlockchainTransaction(
               )
               .toString()
           )
-      window.bypassEstimation &&
+      !window.bypassEstimation &&
         (await sendAsync(provider, 'eth_estimateGas', tx))
       var sendTransaction
       if (privateKey) {
