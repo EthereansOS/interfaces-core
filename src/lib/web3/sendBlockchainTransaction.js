@@ -77,7 +77,7 @@ function sendBlockchainTransaction(
         )
       }
 
-      tx.gasLimit = !window.bypassEstimation
+      tx.gasLimit = window.bypassEstimation
         ? tx.gasLimit
         : web3.utils.toHex(
             web3.utils
