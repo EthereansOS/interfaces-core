@@ -12,7 +12,8 @@ import useEthosContext from '../hooks/useEthosContext'
 
 const Web3Context = React.createContext('web3')
 
-const BLOCK_INTERVAL = 15
+const DEFAULT_BLOCK_INTERVAL = 15
+const DEFAULT_BLOCK_INTERVAL_TIMEOUT = 40000
 
 export const web3States = { NOT_CONNECTED, CONNECTED, CONNECTING }
 
@@ -41,7 +42,15 @@ export const Web3ContextProvider = (props) => {
   )
 }
 
-const Web3ContextInitializer = ({ children }) => {
+const Web3ContextInitializer = ({
+  children,
+  blockInterval,
+  blockIntervalTimeout,
+}) => {
+  const realBlockInterval = blockInterval || DEFAULT_BLOCK_INTERVAL
+  const realBlockIntervalTimeout =
+    blockIntervalTimeout || DEFAULT_BLOCK_INTERVAL_TIMEOUT
+
   const context = useEthosContext()
 
   const [ipfsHttpClient, setIpfsHttpClient] = useState(
@@ -64,7 +73,7 @@ const Web3ContextInitializer = ({ children }) => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
   }, [context])
 
-  async function updateBlock() {
+  async function tryUpdateBlock() {
     try {
       var currentBlock = await sendAsync(
         wallet.ethereum,
@@ -73,11 +82,22 @@ const Web3ContextInitializer = ({ children }) => {
         true
       )
       var currentBlockNumber = parseInt(currentBlock.number)
-      if (currentBlockNumber - block >= BLOCK_INTERVAL) {
+      if (currentBlockNumber - block >= realBlockInterval) {
         setBlock(currentBlockNumber)
       }
     } catch (e) {}
   }
+
+  function resetBlockInterval() {
+    intervalId && clearInterval(intervalId)
+    setBlock(0)
+    wallet && wallet.ethereum && tryUpdateBlock()
+    wallet &&
+      wallet.ethereum &&
+      setIntervalId(setInterval(tryUpdateBlock, realBlockIntervalTimeout))
+  }
+
+  useEffect(resetBlockInterval, [realBlockInterval, realBlockIntervalTimeout])
 
   useEffect(() => {
     setConnectionStatus(
@@ -99,10 +119,7 @@ const Web3ContextInitializer = ({ children }) => {
     setContracts({})
     setGlobalContracts(globalContractNames.map(newContractByName))
     setChainId((wallet && wallet.chainId) || null)
-    intervalId && clearInterval(intervalId)
-    setBlock(0)
-    wallet && wallet.ethereum && updateBlock()
-    wallet && wallet.ethereum && setIntervalId(setInterval(updateBlock, 35000))
+    resetBlockInterval()
   }, [wallet && wallet.chainId])
 
   const setConnector = (connector) => {
