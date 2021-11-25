@@ -77,7 +77,7 @@ const Web3ContextInitializer = ({
     try {
       var currentBlock = await sendAsync(
         wallet.ethereum,
-        'eth_getBlock',
+        'eth_getBlockByNumber',
         'latest',
         true
       )
