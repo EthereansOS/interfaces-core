@@ -12,6 +12,8 @@ import useEthosContext from '../hooks/useEthosContext'
 
 const Web3Context = React.createContext('web3')
 
+const BLOCK_INTERVAL = 15
+
 export const web3States = { NOT_CONNECTED, CONNECTED, CONNECTING }
 
 export const useWeb3 = () => useContext(Web3Context)
@@ -55,9 +57,27 @@ const Web3ContextInitializer = ({ children }) => {
   const [globalContracts, setGlobalContracts] = useState([])
   const [contracts, setContracts] = useState({})
 
+  const [intervalId, setIntervalId] = useState(0)
+  const [block, setBlock] = useState(0)
+
   useEffect(() => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
   }, [context])
+
+  async function updateBlock() {
+    try {
+      var currentBlock = await sendAsync(
+        wallet.ethereum,
+        'eth_getBlock',
+        'latest',
+        true
+      )
+      var currentBlockNumber = parseInt(currentBlock.number)
+      if (currentBlockNumber - block >= BLOCK_INTERVAL) {
+        setBlock(currentBlockNumber)
+      }
+    } catch (e) {}
+  }
 
   useEffect(() => {
     setConnectionStatus(
@@ -79,6 +99,10 @@ const Web3ContextInitializer = ({ children }) => {
     setContracts({})
     setGlobalContracts(globalContractNames.map(newContractByName))
     setChainId((wallet && wallet.chainId) || null)
+    intervalId && clearInterval(intervalId)
+    setBlock(0)
+    wallet && wallet.ethereum && updateBlock()
+    wallet && wallet.ethereum && setIntervalId(setInterval(updateBlock, 35000))
   }, [wallet && wallet.chainId])
 
   const setConnector = (connector) => {
@@ -139,6 +163,7 @@ const Web3ContextInitializer = ({ children }) => {
         chainId: chainId,
         chainName: wallet.networkName,
         web3: web3Instance,
+        block,
         getGlobalContract,
         newContract,
       }),
