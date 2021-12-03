@@ -1,6 +1,7 @@
 export { default as checkCoverSize } from './checkCoverSize'
 export { default as eliminateFloatingFinalZeroes } from './eliminateFloatingFinalZeroes'
 export { default as formatMoney } from './formatMoney'
+export { default as formatMoneyUniV3 } from './formatMoneyUniV3'
 export { default as formatNumber } from './formatNumber'
 export { default as formatString } from './formatString'
 export { default as fromDecimals } from './fromDecimals'

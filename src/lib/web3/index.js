@@ -28,5 +28,8 @@ export { default as uploadToIPFS } from './uploadToIPFS'
 export { default as uploadMetadata } from './uploadMetadata'
 export { default as transfer } from './transfer'
 export { default as sendAsync } from './sendAsync'
+export * from './getTokenPriceInDollarsOnUniswap'
+export * from '@uniswap/v3-sdk'
+export * from '@uniswap/sdk-core'
 
 export * from './contracts'
