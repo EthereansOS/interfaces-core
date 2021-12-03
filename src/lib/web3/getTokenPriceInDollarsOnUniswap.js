@@ -20,7 +20,7 @@ export async function getTokenPriceInDollarsOnUniswap(
   var wethAddress = web3Utils.toChecksumAddress(
     await blockchainCall(uniswapV2Router.methods.WETH)
   )
-  var ethereumPrice = await getEthereumPrice()
+  var ethereumPrice = await getEthereumPrice({ context })
   var path = [tokenAddress, wethAddress]
   var amount = toDecimals(
     numberToString(!isNaN(amountPlain) ? amountPlain : 1),
@@ -49,7 +49,7 @@ export async function getTokenPriceInDollarsOnUniswapV3(
   var wethAddress = web3Utils.toChecksumAddress(
     await blockchainCall(uniswapV2Router.methods.WETH)
   )
-  var ethereumPrice = await getEthereumPrice()
+  var ethereumPrice = await getEthereumPrice({ context })
   var ethereumValue = '0'
   var univ3Factory = newContract(
     context.UniswapV3FactoryABI,
