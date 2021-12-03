@@ -40,8 +40,7 @@ export async function getTokenPriceInDollarsOnUniswap(
 export async function getTokenPriceInDollarsOnUniswapV3(
   { context, newContract, chainId },
   tokenAddress,
-  decimals,
-  amountPlain = 0
+  decimals
 ) {
   var uniswapV2Router = newContract(
     context.uniswapV2RouterABI,
