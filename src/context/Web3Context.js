@@ -73,7 +73,7 @@ const Web3ContextInitializer = ({
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
   }, [context])
 
-  async function tryUpdateBlock() {
+  async function tryUpdateBlock(force) {
     try {
       var currentBlock = await sendAsync(
         wallet.ethereum,
@@ -82,7 +82,7 @@ const Web3ContextInitializer = ({
         true
       )
       var currentBlockNumber = parseInt(currentBlock.number)
-      if (currentBlockNumber - block >= realBlockInterval) {
+      if (force === true || currentBlockNumber - block >= realBlockInterval) {
         setBlock(currentBlockNumber)
       }
     } catch (e) {}
@@ -90,14 +90,17 @@ const Web3ContextInitializer = ({
 
   function resetBlockInterval() {
     intervalId && clearInterval(intervalId)
-    setBlock(0)
-    wallet && wallet.ethereum && tryUpdateBlock()
+    wallet && wallet.ethereum && tryUpdateBlock(true)
     wallet &&
       wallet.ethereum &&
       setIntervalId(setInterval(tryUpdateBlock, realBlockIntervalTimeout))
   }
 
-  useEffect(resetBlockInterval, [realBlockInterval, realBlockIntervalTimeout])
+  useEffect(resetBlockInterval, [
+    realBlockInterval,
+    realBlockIntervalTimeout,
+    wallet && wallet.ethereum,
+  ])
 
   useEffect(() => {
     setConnectionStatus(
