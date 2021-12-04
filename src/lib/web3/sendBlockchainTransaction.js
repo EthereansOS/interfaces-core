@@ -55,9 +55,6 @@ function sendBlockchainTransaction(
       tx.data = data
       tx.value = web3.utils.toHex(value || '0')
       tx.chainId = web3.utils.toHex(await sendAsync(provider, 'eth_chainId'))
-      tx.gasPrice = web3.utils.toHex(
-        web3.utils.toWei(await getGasValueInGWEI(provider), 'gwei')
-      )
       tx.gasLimit = web3.utils.toHex(
         (await sendAsync(provider, 'eth_getBlockByNumber', 'latest', false))
           .gasLimit
