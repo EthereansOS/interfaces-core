@@ -15,6 +15,14 @@ function fromDecimals(number, decimals, skipFormat) {
   number = Number(!isNaN(number?.value) ? number.value : number)
   decimals = Number(!isNaN(decimals?.value) ? decimals.value : decimals)
 
+  if (!number) {
+    number = '0'
+  }
+
+  if (!decimals || parseInt(decimals) === 0) {
+    return number
+  }
+
   if (!number || !decimals) {
     return '0'
   }

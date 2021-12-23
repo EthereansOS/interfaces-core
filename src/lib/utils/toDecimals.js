@@ -14,7 +14,11 @@ function toDecimals(number, decimals) {
   decimals = Number(!isNaN(decimals?.value) ? decimals.value : decimals) || 18
 
   if (!number) {
-    return '0'
+    number = '0'
+  }
+
+  if (!decimals || parseInt(decimals) === 0) {
+    return number
   }
 
   const symbol = toEthereumSymbol(decimals)
