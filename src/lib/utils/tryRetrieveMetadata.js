@@ -6,6 +6,24 @@ import blockchainCall from '../web3/blockchainCall'
 import formatLink from './formatLink'
 import getElementImage from './getElementImage'
 
+function cleanLink(linkToClean) {
+  var cleanedLink = linkToClean
+
+  if (
+    cleanedLink.indexOf('data:') === 0 ||
+    cleanedLink.indexOf('ipfs') === -1
+  ) {
+    return cleanedLink
+  }
+
+  var split = cleanedLink.split('/ipfs/')
+  var ipfsLink = split[split.length - 1]
+
+  cleanedLink = '//gateway.ipfs.io/ipfs/' + ipfsLink
+
+  return cleanedLink
+}
+
 export default async function tryRetrieveMetadata(
   { context, itemsTokens, ethItemElementImages, metadatas },
   item
@@ -46,7 +64,7 @@ export default async function tryRetrieveMetadata(
     item.metadataLink =
       (metadatas && metadatas[item.address]) || item.metadataLink
     if (item.metadataLink !== '') {
-      item.image = formatLink({ context }, item.metadataLink)
+      item.image = cleanLink(formatLink({ context }, item.metadataLink))
       try {
         item.metadata = item.metadataLink.startsWith(
           'data:application/json;base64,'
@@ -59,7 +77,7 @@ export default async function tryRetrieveMetadata(
               )
             )
           : await (
-              await fetch(formatLink({ context }, item.metadataLink))
+              await fetch(cleanLink(formatLink({ context }, item.metadataLink)))
             ).json()
         if (typeof item.metadata !== 'string') {
           Object.entries(item.metadata).forEach((it) => {
