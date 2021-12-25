@@ -11,7 +11,7 @@ import numberToString from './numberToString'
  */
 function toDecimals(number, decimals) {
   number = Number(!isNaN(number?.value) ? number.value : number)
-  decimals = Number(!isNaN(decimals?.value) ? decimals.value : decimals) || 18
+  decimals = Number(!isNaN(decimals?.value) ? decimals.value : decimals) || 0
 
   if (!number) {
     number = '0'
