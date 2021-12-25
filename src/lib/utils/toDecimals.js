@@ -10,8 +10,8 @@ import numberToString from './numberToString'
  * @return {string|number|BN}
  */
 function toDecimals(number, decimals) {
-  number = Number(!isNaN(number?.value) ? number.value : number)
-  decimals = Number(!isNaN(decimals?.value) ? decimals.value : decimals) || 0
+  number = numberToString(number.value || number || 0)
+  decimals = numberToString(decimals.value || decimals || 0)
 
   if (!number) {
     number = '0'
