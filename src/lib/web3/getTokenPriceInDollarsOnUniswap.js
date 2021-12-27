@@ -1,11 +1,18 @@
 import web3Utils from 'web3-utils'
-import { TICK_SPACINGS, tickToPrice } from '@uniswap/v3-sdk'
+import { tickToPrice } from '@uniswap/v3-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { fromDecimals, toDecimals, numberToString } from '../utils'
 
 import getEthereumPrice from './getEthereumPrice'
 import blockchainCall from './blockchainCall'
+
+const conversionEncode = {
+  100: '000064',
+  500: '0001f4',
+  3000: '000bb8',
+  10000: '002710',
+}
 
 export async function getTokenPriceInDollarsOnUniswap(
   { context, newContract },
@@ -66,7 +73,7 @@ export async function getTokenPriceInDollarsOnUniswapV3(
   try {
     var proms = (
       await Promise.all(
-        Object.keys(TICK_SPACINGS).map(async (fee) => {
+        Object.keys(conversionEncode).map(async (fee) => {
           try {
             var pool = newContract(
               context.UniswapV3PoolABI,
