@@ -2,7 +2,6 @@ import './ethereumjs-tx.min.js'
 import Web3 from 'web3'
 
 import sendAsync from './sendAsync'
-import getGasValueInGWEI from './getGasValueInGWEI'
 
 var web3 = new Web3()
 
@@ -29,8 +28,10 @@ function sendBlockchainTransaction(
   fromOrPlainPrivateKey,
   to,
   data,
-  value
+  value,
+  additionalData
 ) {
+  additionalData = additionalData || {}
   var address = fromOrPlainPrivateKey
   var privateKey
   try {
@@ -56,8 +57,9 @@ function sendBlockchainTransaction(
       tx.value = web3.utils.toHex(value || '0')
       tx.chainId = web3.utils.toHex(await sendAsync(provider, 'eth_chainId'))
       tx.gasLimit = web3.utils.toHex(
-        (await sendAsync(provider, 'eth_getBlockByNumber', 'latest', false))
-          .gasLimit
+        additionalData.gasLimit ||
+          (await sendAsync(provider, 'eth_getBlockByNumber', 'latest', false))
+            .gasLimit
       )
 
       if (provider.blockchainConnection) {
