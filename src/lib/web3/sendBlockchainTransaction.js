@@ -76,18 +76,19 @@ function sendBlockchainTransaction(
         )
       }
 
-      tx.gasLimit = window.bypassEstimation
-        ? tx.gasLimit
-        : web3.utils.toHex(
-            web3.utils
-              .toBN(
-                parseInt(
-                  parseInt(await sendAsync(provider, 'eth_estimateGas', tx)) *
-                    1.10269
+      tx.gasLimit =
+        window.bypassEstimation || additionalData.gasLimit
+          ? tx.gasLimit
+          : web3.utils.toHex(
+              web3.utils
+                .toBN(
+                  parseInt(
+                    parseInt(await sendAsync(provider, 'eth_estimateGas', tx)) *
+                      1.10269
+                  )
                 )
-              )
-              .toString()
-          )
+                .toString()
+            )
       !window.bypassEstimation &&
         (await sendAsync(provider, 'eth_estimateGas', tx))
       var sendTransaction
