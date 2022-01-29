@@ -91,6 +91,7 @@ function sendBlockchainTransaction(
             )
       !window.bypassEstimation &&
         (await sendAsync(provider, 'eth_estimateGas', tx))
+      tx.gas = tx.gasLimit
       var sendTransaction
       if (privateKey) {
         var transaction = new global.EthereumJSTransaction.Transaction(tx, {
