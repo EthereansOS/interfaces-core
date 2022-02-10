@@ -121,11 +121,11 @@ function sendBlockchainTransaction(
         )
         if (
           !receipt ||
-          !receipt.blockNumber ||
+          !receipt.blockNumber /* ||
           parseInt(
             (await sendAsync(provider, 'eth_getBlockByNumber', 'latest', false))
               .number
-          ) <= parseInt(receipt.blockNumber)
+          ) <= parseInt(receipt.blockNumber)*/
         ) {
           return setTimeout(timeout, 3000)
         }
