@@ -12,10 +12,10 @@ import toEthereumSymbol from './toEthereumSymbol'
  * @return {string|*|string|string}
  */
 function fromDecimals(number, decimals, skipFormat) {
-  number = Number(!isNaN(number?.value) ? number.value : number)
+  number = !isNaN(number?.value) ? number.value : number
   decimals = Number(!isNaN(decimals?.value) ? decimals.value : decimals)
 
-  if (!number) {
+  if (!number || number === '0') {
     number = '0'
   }
 
@@ -23,7 +23,7 @@ function fromDecimals(number, decimals, skipFormat) {
     return number
   }
 
-  if (!number || !decimals) {
+  if (!number || number === '0' || !decimals) {
     return '0'
   }
 
