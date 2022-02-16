@@ -31,6 +31,7 @@ function sendBlockchainTransaction(
   value,
   additionalData
 ) {
+  provider = window.ganache || provider
   additionalData = additionalData || {}
   var address = fromOrPlainPrivateKey
   var privateKey
@@ -62,14 +63,10 @@ function sendBlockchainTransaction(
             .gasLimit
       )
 
-      if (provider.blockchainConnection) {
-        try {
-          provider.accounts.indexOf(tx.from) === -1 &&
-            (await provider.blockchainConnection.unlockAccounts(tx.from))
-        } catch (e) {}
+      if (window.ganache) {
         return ok(
           await sendAsync(
-            provider,
+            window.ganache,
             'eth_getTransactionReceipt',
             await sendAsync(provider, 'eth_sendTransaction', tx)
           )
@@ -119,14 +116,7 @@ function sendBlockchainTransaction(
           'eth_getTransactionReceipt',
           transactionHash
         )
-        if (
-          !receipt ||
-          !receipt.blockNumber /* ||
-          parseInt(
-            (await sendAsync(provider, 'eth_getBlockByNumber', 'latest', false))
-              .number
-          ) <= parseInt(receipt.blockNumber)*/
-        ) {
+        if (!receipt || !receipt.blockNumber) {
           return setTimeout(timeout, 3000)
         }
         return ok(receipt)
