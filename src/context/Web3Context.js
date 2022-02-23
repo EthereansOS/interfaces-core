@@ -88,18 +88,17 @@ const Web3ContextInitializer = ({
     } catch (e) {}
   }
 
-  window.updateAccount =
-    window.updateAccount ||
-    async function updateAccount(acc) {
-      delete window.account
-      acc && (window.account = acc)
-      try {
-        acc &&
-          window.ganache &&
-          (await sendAsync(window.ganache, 'evm_addAccount', acc, 0))
-      } catch (e) {}
-      setTimeout(resetBlockInterval)
-    }
+  window.updateAccount = async function updateAccount(acc) {
+    delete window.account
+    acc && (window.account = acc)
+    try {
+      acc &&
+        window.ganache &&
+        (await sendAsync(window.ganache, 'evm_addAccount', acc, 0))
+    } catch (e) {}
+    setBlock(new Date().getTime())
+    setTimeout(resetBlockInterval)
+  }
 
   function resetBlockInterval() {
     intervalId && clearInterval(intervalId)
