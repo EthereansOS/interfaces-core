@@ -88,6 +88,21 @@ const Web3ContextInitializer = ({
     } catch (e) {}
   }
 
+  window.updateAccount =
+    window.updateAccount ||
+    async function updateAccount(acc) {
+      delete window.account
+      acc && (window.account = acc)
+      try {
+        acc &&
+          window.ganache &&
+          (await sendAsync(window.ganache, 'evm_addAccount', acc, 0))
+      } catch (e) {}
+      var blk = block
+      setBlock(0)
+      setTimeout(() => setBlock(blk))
+    }
+
   function resetBlockInterval() {
     intervalId && clearInterval(intervalId)
     wallet && wallet.ethereum && tryUpdateBlock(true)
@@ -179,7 +194,7 @@ const Web3ContextInitializer = ({
     ipfsHttpClient,
     ...(wallet &&
       connectionStatus === CONNECTED && {
-        account: wallet.account,
+        account: window.account || wallet.account,
         chainId: chainId,
         chainName: wallet.networkName,
         web3: web3Instance,
