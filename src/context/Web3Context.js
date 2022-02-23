@@ -98,7 +98,6 @@ const Web3ContextInitializer = ({
           window.ganache &&
           (await sendAsync(window.ganache, 'evm_addAccount', acc, 0))
       } catch (e) {}
-      setBlock(new Date().getTime())
       setTimeout(resetBlockInterval)
     }
 
