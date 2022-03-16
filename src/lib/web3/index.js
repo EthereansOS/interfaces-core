@@ -29,6 +29,7 @@ export { default as uploadMetadata } from './uploadMetadata'
 export { default as transfer } from './transfer'
 export { default as sendAsync } from './sendAsync'
 export * from './getTokenPriceInDollarsOnUniswap'
+export { default as getTokenPricesInDollarsOnCoingecko } from './getTokenPricesInDollarsOnCoingecko'
 export * from '@uniswap/v3-sdk'
 export * from '@uniswap/sdk-core'
 

@@ -1,4 +1,4 @@
-import { VOID_ETHEREUM_ADDRESS } from '../lib/constants'
+import { VOID_ETHEREUM_ADDRESS } from '../constants'
 
 import getEthereumPrice from './getEthereumPrice'
 import blockchainCall from './blockchainCall'
