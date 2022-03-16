@@ -1,5 +1,7 @@
 import { utils } from 'ethers'
 
+export * from 'ethers'
+
 export * from './context/GlobalContexts'
 export * from './hooks/usePlugins'
 export * from './hooks/usePrevious'
