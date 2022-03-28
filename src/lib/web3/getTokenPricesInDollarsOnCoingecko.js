@@ -56,8 +56,6 @@ export default async function getTokenPricesInDollarsOnCoingecko(
   var response = {
     data: {},
   }
-  tokenPrices = tokenPrices || {}
-  tokenPricesPromises = tokenPricesPromises || {}
   var tkns = []
   for (var token of tokens) {
     if (!token || token === VOID_ETHEREUM_ADDRESS) {
