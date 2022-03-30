@@ -27,14 +27,18 @@ function fromDecimals(number, decimals, skipFormat) {
     return '0'
   }
 
+  number = numberToString(number).split('.')[0]
+
   const symbol = toEthereumSymbol(decimals)
   if (symbol) {
-    const result = web3Utils.fromWei(numberToString(number), symbol)
+    const result = web3Utils.fromWei(number, symbol)
     return skipFormat === true ? result : formatMoney(result)
   }
 
   const nts = parseFloat(
-    numberToString(number / (decimals < 2 ? 1 : Math.pow(10, decimals)))
+    numberToString(
+      parseFloat(number) / (decimals < 2 ? 1 : Math.pow(10, decimals))
+    )
   )
 
   // TODO verify if is expected that is rounded to 2 decimals
