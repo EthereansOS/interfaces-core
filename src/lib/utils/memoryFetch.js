@@ -6,8 +6,10 @@ export default async function memoryFetch(url, type) {
   if (element) {
     return element
   }
+
   element = await fetch(url)
   element = await element[type || 'json']()
+
   try {
     window.localStorage.setItem(url, JSON.stringify(element))
   } catch (e) {}
