@@ -5,6 +5,7 @@ import blockchainCall from '../web3/blockchainCall'
 
 import formatLink from './formatLink'
 import getElementImage from './getElementImage'
+import memoryFetch from './memoryFetch'
 
 function cleanLink(linkToClean) {
   var cleanedLink = linkToClean
@@ -77,7 +78,9 @@ export default async function tryRetrieveMetadata(
               )
             )
           : await (
-              await fetch(cleanLink(formatLink({ context }, item.metadataLink)))
+              await memoryFetch(
+                cleanLink(formatLink({ context }, item.metadataLink))
+              )
             ).json()
         if (typeof item.metadata !== 'string') {
           Object.entries(item.metadata).forEach((it) => {
