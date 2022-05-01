@@ -77,11 +77,9 @@ export default async function tryRetrieveMetadata(
                 )
               )
             )
-          : await (
-              await memoryFetch(
-                cleanLink(formatLink({ context }, item.metadataLink))
-              )
-            ).json()
+          : await memoryFetch(
+              cleanLink(formatLink({ context }, item.metadataLink))
+            )
         if (typeof item.metadata !== 'string') {
           Object.entries(item.metadata).forEach((it) => {
             if (it[1] === undefined || it[1] === null) {
