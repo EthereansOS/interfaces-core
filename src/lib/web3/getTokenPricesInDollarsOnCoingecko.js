@@ -5,6 +5,7 @@ import blockchainCall from './blockchainCall'
 import {
   getTokenPriceInDollarsOnUniswap,
   getTokenPriceInDollarsOnUniswapV3,
+  getTokenPriceInDollarsOnSushiSwap,
 } from './getTokenPriceInDollarsOnUniswap'
 
 const tokenPrices = {}
@@ -32,15 +33,33 @@ async function elaboratePrices({ context, web3Data }, res, tokens) {
         ),
       }
     } catch (e) {
-      response.data[token] = {
-        usd: await getTokenPriceInDollarsOnUniswap(
-          { context, ...web3Data },
-          token,
-          await blockchainCall(
-            web3Data.newContract(context.ERC20ABI, token).methods.decimals
-          )
-        ),
-      }
+      try {
+        response.data[token] = {
+          usd: await getTokenPriceInDollarsOnUniswap(
+            { context, ...web3Data },
+            token,
+            await blockchainCall(
+              web3Data.newContract(context.ERC20ABI, token).methods.decimals
+            )
+          ),
+        }
+      } catch (e) {}
+      try {
+        if (
+          !response.data[token].usd ||
+          parseFloat(response.data[token].usd) === 0
+        ) {
+          response.data[token] = {
+            usd: await getTokenPriceInDollarsOnSushiSwap(
+              { context, ...web3Data },
+              token,
+              await blockchainCall(
+                web3Data.newContract(context.ERC20ABI, token).methods.decimals
+              )
+            ),
+          }
+        }
+      } catch (e) {}
     }
   }
   return response

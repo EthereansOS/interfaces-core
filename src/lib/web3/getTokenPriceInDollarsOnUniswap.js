@@ -44,6 +44,36 @@ export async function getTokenPriceInDollarsOnUniswap(
   return ethereumValue
 }
 
+export async function getTokenPriceInDollarsOnSushiSwap(
+  { context, newContract },
+  tokenAddress,
+  decimals,
+  amountPlain
+) {
+  var uniswapV2Router = newContract(
+    context.uniswapV2RouterABI,
+    context.sushiSwapRouterAddress
+  )
+  var wethAddress = web3Utils.toChecksumAddress(
+    await blockchainCall(uniswapV2Router.methods.WETH)
+  )
+  var ethereumPrice = await getEthereumPrice({ context })
+  var path = [tokenAddress, wethAddress]
+  var amount = toDecimals(
+    numberToString(!isNaN(amountPlain) ? amountPlain : 1),
+    decimals
+  )
+  var ethereumValue = '0'
+  try {
+    ethereumValue = (
+      await blockchainCall(uniswapV2Router.methods.getAmountsOut, amount, path)
+    )[1]
+  } catch (e) {}
+  ethereumValue = parseFloat(fromDecimals(ethereumValue, 18, true))
+  ethereumValue *= ethereumPrice
+  return ethereumValue
+}
+
 export async function getTokenPriceInDollarsOnUniswapV3(
   { context, newContract, chainId },
   tokenAddress,
