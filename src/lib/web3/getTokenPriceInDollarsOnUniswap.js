@@ -59,6 +59,7 @@ export async function getTokenPriceInDollarsOnSushiSwap(
   )
   var ethereumPrice = await getEthereumPrice({ context })
   var path = [tokenAddress, wethAddress]
+
   var amount = toDecimals(
     numberToString(!isNaN(amountPlain) ? amountPlain : 1),
     decimals
