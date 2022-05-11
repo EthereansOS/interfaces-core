@@ -23,7 +23,19 @@ function toDecimals(number, decimals) {
 
   const symbol = toEthereumSymbol(decimals)
   if (symbol) {
-    return web3Utils.toWei(numberToString(number), symbol)
+    number = numberToString(number)
+    while (true) {
+      try {
+        return web3Utils.toWei(number, symbol)
+      } catch (e) {
+        const message = (e.message || e).toLowerCase()
+        if (message.indexOf('too many') !== -1) {
+          number = number.substring(0, number.length - 1)
+        } else {
+          throw e
+        }
+      }
+    }
   }
   return numberToString(number * (decimals < 2 ? 1 : Math.pow(10, decimals)))
 }
