@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
-import { UseWalletProvider, useWallet, chains } from 'use-wallet'
+import { UseWalletProvider, useWallet } from 'use-wallet'
 import Web3 from 'web3'
 import web3Utils from 'web3-utils'
 
@@ -14,6 +14,8 @@ const Web3Context = React.createContext('web3')
 
 const DEFAULT_BLOCK_INTERVAL = 15
 const DEFAULT_BLOCK_INTERVAL_TIMEOUT = 40000
+
+const chains = require('use-wallet').chains
 
 /**
  * WRAP CHAINS START
