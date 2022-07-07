@@ -15,46 +15,6 @@ const Web3Context = React.createContext('web3')
 const DEFAULT_BLOCK_INTERVAL = 15
 const DEFAULT_BLOCK_INTERVAL_TIMEOUT = 40000
 
-const chains = require('use-wallet').chains
-
-/**
- * WRAP CHAINS START
- **/
-const ETH = chains.getChainInformation(1).nativeCurrency
-const WRAPPED_CHAINS = {
-  10: {
-    id: 10,
-    nativeCurrency: ETH,
-    type: 'main',
-    fullName: 'Optimism Mainnet',
-    shortName: 'Optimism',
-    explorerUrl: 'https://optimistic.etherscan.io',
-    testnet: false,
-  },
-}
-function wrap(methodName, funct, force) {
-  var oldFunction = chains[methodName]
-  chains[methodName] = function (chainId) {
-    var args = [...arguments, oldFunction]
-    return (
-      WRAPPED_CHAINS[parseInt(chainId)] || force ? funct : oldFunction
-    ).apply(chains, args)
-  }
-}
-wrap('isKnownChain', () => true)
-wrap('getChainInformation', (chainId) => WRAPPED_CHAINS[parseInt(chainId)])
-wrap('getKnownChainsIds', (oldFunction) => [
-  ...oldFunction(),
-  ...Object.keys(WRAPPED_CHAINS),
-])
-wrap('getKnownChainInformation', (oldFunction) => [
-  ...oldFunction(),
-  ...Object.values(WRAPPED_CHAINS),
-])
-/**
- * WRAP CHAINS END
- **/
-
 export const web3States = { NOT_CONNECTED, CONNECTED, CONNECTING }
 
 export const useWeb3 = () => useContext(Web3Context)
