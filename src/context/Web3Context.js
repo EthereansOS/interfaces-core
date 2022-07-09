@@ -100,18 +100,15 @@ const Web3ContextInitializer = ({
   var resetBlockInterval = useCallback(() => {
     intervalId && clearInterval(intervalId)
     tryUpdateBlock(wallet?.ethereum, block, setBlock, true)
-    tryUpdateBlock(
-      dualProvider,
-      dualBlock,
-      setDualBlock,
-      true
-    )((wallet && wallet.ethereum) || dualProvider) &&
+    tryUpdateBlock(dualProvider, dualBlock, setDualBlock, true)
+    if ((wallet && wallet.ethereum) || dualProvider) {
       setIntervalId(
         setInterval(() => {
           tryUpdateBlock(wallet.ethereum, block, setBlock)
           tryUpdateBlock(dualProvider, dualBlock, setDualBlock)
         }, realBlockIntervalTimeout)
       )
+    }
   }, [wallet, dualProvider, realBlockIntervalTimeout, intervalId])
 
   useEffect(resetBlockInterval, [
