@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useCallback } from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
@@ -69,49 +69,61 @@ const Web3ContextInitializer = ({
   const [intervalId, setIntervalId] = useState(0)
   const [block, setBlock] = useState(0)
 
+  const [dualChainId, setDualChainId] = useState(null)
+  const [dualBlock, setDualBlock] = useState(0)
+  const [dualProvider, setDualProvider] = useState(null)
+
   useEffect(() => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
   }, [context])
 
-  async function tryUpdateBlock(force) {
-    try {
-      var currentBlock = await sendAsync(
-        wallet.ethereum,
-        'eth_getBlockByNumber',
-        'latest',
-        true
-      )
-      var currentBlockNumber = parseInt(currentBlock.number)
-      if (force === true || currentBlockNumber - block >= realBlockInterval) {
-        setBlock(currentBlockNumber)
+  const tryUpdateBlock = useCallback(
+    async (provider, oldValue, setter, force) => {
+      if (!provider) {
+        setter(0)
       }
-    } catch (e) {}
-  }
+      try {
+        var currentBlockNumber = parseInt(
+          await sendAsync(provider, 'eth_blockNumber')
+        )
+        if (
+          force === true ||
+          currentBlockNumber - oldValue >= realBlockInterval
+        ) {
+          setter(currentBlockNumber)
+        }
+      } catch (e) {}
+    },
+    [realBlockInterval]
+  )
 
-  window.updateAccount = async function updateAccount(acc) {
-    delete window.account
-    acc && (window.account = acc)
-    try {
-      acc &&
-        window.ganache &&
-        (await sendAsync(window.ganache, 'evm_addAccount', acc, 0))
-    } catch (e) {}
-    setBlock(new Date().getTime())
-    setTimeout(resetBlockInterval)
-  }
-
-  function resetBlockInterval() {
+  var resetBlockInterval = useCallback(() => {
     intervalId && clearInterval(intervalId)
-    wallet && wallet.ethereum && tryUpdateBlock(true)
+    tryUpdateBlock(wallet?.ethereum, block, setBlock, true)
+    tryUpdateBlock(dualProvider, dualBlock, setDualBlock, true)
     wallet &&
       wallet.ethereum &&
-      setIntervalId(setInterval(tryUpdateBlock, realBlockIntervalTimeout))
-  }
+      setIntervalId(
+        setInterval(
+          () => tryUpdateBlock(wallet.ethereum, block, setBlock),
+          realBlockIntervalTimeout
+        )
+      )
+    dualProvider &&
+      setIntervalId(
+        setInterval(
+          () => tryUpdateBlock(dualProvider, dualBlock, setDualBlock),
+          realBlockIntervalTimeout
+        )
+      )
+  }, [wallet, dualProvider, intervalId])
 
   useEffect(resetBlockInterval, [
     realBlockInterval,
     realBlockIntervalTimeout,
     wallet && wallet.ethereum,
+    dualProvider,
+    intervalId,
   ])
 
   useEffect(() => {
@@ -133,7 +145,18 @@ const Web3ContextInitializer = ({
   useEffect(() => {
     setContracts({})
     setGlobalContracts(globalContractNames.map(newContractByName))
-    setChainId((wallet && wallet.chainId) || null)
+    var actualChainId = (wallet && wallet.chainId) || null
+    setChainId(actualChainId)
+    var actualDualChainId =
+      (actualChainId && context.dualChainId[actualChainId]) || null
+    setDualChainId(actualDualChainId)
+    setDualProvider(
+      (actualDualChainId &&
+        new Web3.providers.HttpProvider(
+          context.chainProvider[actualDualChainId]
+        )) ||
+        null
+    )
     resetBlockInterval()
   }, [wallet && wallet.chainId])
 
@@ -182,6 +205,19 @@ const Web3ContextInitializer = ({
     return globalContracts[index]
   }
 
+  window.setAccount = async function setAccount(acc) {
+    delete window.account
+    acc && (window.account = acc)
+    try {
+      acc &&
+        window.ganache &&
+        (await sendAsync(window.ganache, 'evm_addAccount', acc, 0))
+    } catch (e) {}
+    setBlock(new Date().getTime())
+    setDualBlock(new Date().getTime())
+    setTimeout(resetBlockInterval)
+  }
+
   const value = {
     connectionStatus,
     setConnector,
@@ -198,6 +234,9 @@ const Web3ContextInitializer = ({
         block,
         getGlobalContract,
         newContract,
+        dualChainId,
+        dualBlock,
+        dualProvider,
       }),
     ...(wallet && wallet.error && { errorMessage: wallet.error.message }),
   }
