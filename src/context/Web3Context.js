@@ -116,14 +116,13 @@ const Web3ContextInitializer = ({
           realBlockIntervalTimeout
         )
       )
-  }, [wallet, dualProvider, intervalId])
+  }, [wallet, dualProvider, realBlockIntervalTimeout, intervalId])
 
   useEffect(resetBlockInterval, [
     realBlockInterval,
     realBlockIntervalTimeout,
     wallet && wallet.ethereum,
     dualProvider,
-    intervalId,
   ])
 
   useEffect(() => {
