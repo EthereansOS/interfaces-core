@@ -80,7 +80,7 @@ const Web3ContextInitializer = ({
   const tryUpdateBlock = useCallback(
     async (provider, oldValue, setter, force) => {
       if (!provider) {
-        setter(0)
+        return setter(0)
       }
       try {
         var currentBlockNumber = parseInt(
