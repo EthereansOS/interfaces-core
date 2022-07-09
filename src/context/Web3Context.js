@@ -104,8 +104,10 @@ const Web3ContextInitializer = ({
     if ((wallet && wallet.ethereum) || dualProvider) {
       setIntervalId(
         setInterval(() => {
-          tryUpdateBlock(wallet.ethereum, block, setBlock)
-          tryUpdateBlock(dualProvider, dualBlock, setDualBlock)
+          wallet &&
+            wallet.ethereum &&
+            tryUpdateBlock(wallet.ethereum, block, setBlock)
+          dualProvider && tryUpdateBlock(dualProvider, dualBlock, setDualBlock)
         }, realBlockIntervalTimeout)
       )
     }
