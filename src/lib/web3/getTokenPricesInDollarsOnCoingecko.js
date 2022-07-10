@@ -101,9 +101,13 @@ export default async function getTokenPricesInDollarsOnCoingecko(
     }
     try {
       t1.length > 0 &&
-        (res.data = await (
-          await fetch(context.coingeckoCoinPriceURL + t1.join(','))
-        ).json())
+        (res.data = (
+          await Promise.all(
+            context.coingeckoCoinPriceURLTemplates.map(
+              async (it) => await (await fetch(it + t1.join(','))).json()
+            )
+          )
+        ).reduce(((acc, it) => ({ ...acc, ...it }), {})))
     } catch (e) {}
     return await elaboratePrices({ context, web3Data }, res, t2)
   }
