@@ -4,11 +4,13 @@ import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
 import Web3 from 'web3'
 import web3Utils from 'web3-utils'
+import { utils } from 'ethers'
 
 import sendAsync from '../lib/web3/sendAsync'
 import getNetworkElement from '../lib/web3/getNetworkElement'
 import { NOT_CONNECTED, CONNECTED, CONNECTING } from '../lib/web3'
 import useEthosContext from '../hooks/useEthosContext'
+export const abi = new utils.AbiCoder()
 
 const Web3Context = React.createContext('web3')
 
@@ -97,17 +99,50 @@ const Web3ContextInitializer = ({
     [realBlockInterval]
   )
 
+  const tryUpdateBlockDual = useCallback(
+    async (provider, oldValue, setter, force) => {
+      if (!provider) {
+        return setter(0)
+      }
+      try {
+        var currentBlockNumber = await sendAsync(provider, 'eth_call', {
+          to: '0x4200000000000000000000000000000000000013',
+          data: web3Utils.sha3('getL1BlockNumber()').substring(0, 10),
+        })
+        currentBlockNumber = abi
+          .decode(['uint256'], currentBlockNumber)[0]
+          .toString()
+        currentBlockNumber = parseInt(currentBlockNumber)
+        if (
+          force === true ||
+          currentBlockNumber - oldValue >= realBlockInterval
+        ) {
+          setter(currentBlockNumber)
+        }
+      } catch (e) {}
+    },
+    [realBlockInterval]
+  )
+
   var resetBlockInterval = useCallback(() => {
     intervalId && clearInterval(intervalId)
     tryUpdateBlock(wallet?.ethereum, block, setBlock, true)
-    tryUpdateBlock(dualProvider, dualBlock, setDualBlock, true)
+    tryUpdateBlockDual(
+      dualProvider && wallet?.ethereum,
+      dualBlock,
+      setDualBlock,
+      true
+    )
     if ((wallet && wallet.ethereum) || dualProvider) {
       setIntervalId(
         setInterval(() => {
           wallet &&
             wallet.ethereum &&
             tryUpdateBlock(wallet.ethereum, block, setBlock)
-          dualProvider && tryUpdateBlock(dualProvider, dualBlock, setDualBlock)
+          dualProvider &&
+            wallet &&
+            wallet.ethereum &&
+            tryUpdateBlockDual(wallet.ethereum, dualBlock, setDualBlock)
         }, realBlockIntervalTimeout)
       )
     }
