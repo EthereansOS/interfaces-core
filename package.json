@@ -1,6 +1,6 @@
 {
   "name": "@ethereansos/interfaces-core",
-  "version": "0.4.118",
+  "version": "0.4.119",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
