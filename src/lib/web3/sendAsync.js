@@ -1,8 +1,25 @@
-export default function sendAsync(provider, method) {
+import Web3 from 'web3'
+
+const instrumentedProviders = {}
+
+async function sendAsync(inputProvider, method) {
+  var provider = inputProvider
+  if (method !== 'eth_chainId') {
+    const chainId = (provider.chainId =
+      provider.chainId || parseInt(await sendAsync(provider, 'eth_chainId')))
+    const { chainProvider } = sendAsync.context || {
+      chainProvider: {},
+    }
+    provider = chainProvider[chainId]
+      ? (instrumentedProviders[chainId] =
+          instrumentedProviders[chainId] ||
+          new Web3.providers.HttpProvider(chainProvider[chainId]))
+      : provider
+  }
   var params = [...arguments].slice(2) || []
-  return new Promise(async function (ok, ko) {
+  return await new Promise(async function (ok, ko) {
     try {
-      await (provider.sendAsync || provider.send).call(
+      await (provider.request || provider.sendAsync || provider.send).call(
         provider,
         {
           jsonrpc: '2.0',
@@ -21,3 +38,5 @@ export default function sendAsync(provider, method) {
     }
   })
 }
+
+export default sendAsync
