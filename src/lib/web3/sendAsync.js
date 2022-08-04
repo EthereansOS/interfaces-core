@@ -2,14 +2,10 @@ import Web3 from 'web3'
 
 const instrumentedProviders = {}
 
-const chainIds = {}
-
 async function sendAsync(inputProvider, method) {
   var provider = inputProvider
   if (method !== 'eth_chainId') {
-    const chainId = (chainIds[provider] = parseInt(
-      chainIds[provider] || (await sendAsync(provider, 'eth_chainId'))
-    ))
+    const chainId = await sendAsync(provider, 'eth_chainId')
     const { chainProvider } = sendAsync.context || {
       chainProvider: {},
     }
