@@ -5,7 +5,7 @@ const instrumentedProviders = {}
 async function sendAsync(inputProvider, method) {
   var provider = inputProvider
   if (method !== 'eth_chainId') {
-    const chainId = await sendAsync(provider, 'eth_chainId')
+    const chainId = parseInt(await sendAsync(provider, 'eth_chainId'))
     const { chainProvider } = sendAsync.context || {
       chainProvider: {},
     }
