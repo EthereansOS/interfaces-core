@@ -28,10 +28,10 @@ async function instrumentProvider(provider, method) {
   const { chainProvider } = sendAsync.context || {
     chainProvider: {},
   }
-  entry.instrumentedProvider =
+  return (entry.instrumentedProvider =
     chainId !== 1 && chainProvider[chainId]
       ? new Web3.providers.HttpProvider(chainProvider[chainId])
-      : provider
+      : provider)
 }
 
 async function sendAsync(inputProvider, method) {
