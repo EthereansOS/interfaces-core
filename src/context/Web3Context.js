@@ -238,7 +238,7 @@ const Web3ContextInitializer = ({
     return globalContracts[index]
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     chainId &&
       web3Instance &&
       web3Instance.currentProvider &&
@@ -249,7 +249,7 @@ const Web3ContextInitializer = ({
       dualChainWeb3.currentProvider &&
       !dualChainWeb3.currentProvider.chainId &&
       (dualChainWeb3.currentProvider.chainId = dualChainId)
-  }, [chainId, web3Instance, dualChainId, dualChainWeb3])
+  }, [chainId, web3Instance, dualChainId, dualChainWeb3])*/
 
   window.setAccount = async function setAccount(acc) {
     delete window.account
