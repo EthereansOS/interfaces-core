@@ -21,7 +21,7 @@ async function sendAsync(inputProvider, method) {
   var params = [...arguments].slice(2) || []
   return await new Promise(async function (ok, ko) {
     try {
-      await (provider.request || provider.sendAsync || provider.send).call(
+      await (provider.sendAsync || provider.send).call(
         provider,
         {
           jsonrpc: '2.0',
