@@ -6,7 +6,7 @@ const instrumentableMethods = ['eth_call', 'eth_getLogs']
 
 async function instrumentProvider(provider, method) {
   if (instrumentableMethods.indexOf(method) === -1) {
-    return
+    return provider
   }
 
   var entry = instrumentedProviders.filter((it) => it.provider === provider)[0]
