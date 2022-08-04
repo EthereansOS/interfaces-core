@@ -35,7 +35,7 @@ async function instrumentProvider(provider, method) {
 }
 
 async function sendAsync(inputProvider, method) {
-  var provider = await instrumentProvider(inputProvider)
+  var provider = await instrumentProvider(inputProvider, method)
   var params = [...arguments].slice(2) || []
   return await new Promise(async function (ok, ko) {
     try {
