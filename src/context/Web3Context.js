@@ -73,7 +73,7 @@ const Web3ContextInitializer = ({
 
   const [dualChainId, setDualChainId] = useState(null)
   const [dualBlock, setDualBlock] = useState(0)
-  const [dualProvider, setDualProvider] = useState(null)
+  const [dualChainWeb3, setDualChainWeb3] = useState(null)
 
   useEffect(() => {
     setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
@@ -99,16 +99,20 @@ const Web3ContextInitializer = ({
     [realBlockInterval]
   )
 
-  const tryUpdateBlockDual = useCallback(
-    async (provider, oldValue, setter, force) => {
-      if (!provider) {
+  const tryUpdateDualChainBlock = useCallback(
+    async (web3, oldValue, setter, force) => {
+      if (!web3?.currentProvider) {
         return setter(0)
       }
       try {
-        var currentBlockNumber = await sendAsync(provider, 'eth_call', {
-          to: '0x4200000000000000000000000000000000000013',
-          data: web3Utils.sha3('getL1BlockNumber()').substring(0, 10),
-        })
+        var currentBlockNumber = await sendAsync(
+          web3.currentProvider,
+          'eth_call',
+          {
+            to: '0x4200000000000000000000000000000000000013',
+            data: web3Utils.sha3('getL1BlockNumber()').substring(0, 10),
+          }
+        )
         currentBlockNumber = abi
           .decode(['uint256'], currentBlockNumber)[0]
           .toString()
@@ -127,32 +131,32 @@ const Web3ContextInitializer = ({
   var resetBlockInterval = useCallback(() => {
     intervalId && clearInterval(intervalId)
     tryUpdateBlock(wallet?.ethereum, block, setBlock, true)
-    tryUpdateBlockDual(
-      dualProvider && wallet?.ethereum,
+    tryUpdateDualChainBlock(
+      dualChainWeb3 && wallet?.ethereum,
       dualBlock,
       setDualBlock,
       true
     )
-    if ((wallet && wallet.ethereum) || dualProvider) {
+    if ((wallet && wallet.ethereum) || dualChainWeb3) {
       setIntervalId(
         setInterval(() => {
           wallet &&
             wallet.ethereum &&
             tryUpdateBlock(wallet.ethereum, block, setBlock)
-          dualProvider &&
+          dualChainWeb3 &&
             wallet &&
             wallet.ethereum &&
-            tryUpdateBlockDual(wallet.ethereum, dualBlock, setDualBlock)
+            tryUpdateDualChainBlock(wallet.ethereum, dualBlock, setDualBlock)
         }, realBlockIntervalTimeout)
       )
     }
-  }, [wallet, dualProvider, realBlockIntervalTimeout, intervalId])
+  }, [wallet, dualChainWeb3, realBlockIntervalTimeout, intervalId])
 
   useEffect(resetBlockInterval, [
     realBlockInterval,
     realBlockIntervalTimeout,
     wallet && wallet.ethereum,
-    dualProvider,
+    dualChainWeb3,
   ])
 
   useEffect(() => {
@@ -179,11 +183,9 @@ const Web3ContextInitializer = ({
     var actualDualChainId =
       (actualChainId && context.dualChainId[actualChainId]) || null
     setDualChainId(actualDualChainId)
-    setDualProvider(
+    setDualChainWeb3(
       (actualDualChainId &&
-        new Web3.providers.HttpProvider(
-          context.chainProvider[actualDualChainId]
-        )) ||
+        new Web3(context.chainProvider[actualDualChainId])) ||
         null
     )
     resetBlockInterval()
@@ -265,7 +267,7 @@ const Web3ContextInitializer = ({
         newContract,
         dualChainId,
         dualBlock,
-        dualProvider,
+        dualChainWeb3,
       }),
     ...(wallet && wallet.error && { errorMessage: wallet.error.message }),
   }
