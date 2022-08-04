@@ -5,16 +5,18 @@ const instrumentedProviders = {}
 async function sendAsync(inputProvider, method) {
   var provider = inputProvider
   if (method !== 'eth_chainId') {
-    const chainId = (provider.chainId =
-      provider.chainId || parseInt(await sendAsync(provider, 'eth_chainId')))
+    const chainId = (provider.chainId = parseInt(
+      provider.chainId || (await sendAsync(provider, 'eth_chainId'))
+    ))
     const { chainProvider } = sendAsync.context || {
       chainProvider: {},
     }
-    provider = chainProvider[chainId]
-      ? (instrumentedProviders[chainId] =
-          instrumentedProviders[chainId] ||
-          new Web3.providers.HttpProvider(chainProvider[chainId]))
-      : provider
+    provider =
+      chainId !== 1 && chainProvider[chainId]
+        ? (instrumentedProviders[chainId] =
+            instrumentedProviders[chainId] ||
+            new Web3.providers.HttpProvider(chainProvider[chainId]))
+        : provider
   }
   var params = [...arguments].slice(2) || []
   return await new Promise(async function (ok, ko) {
