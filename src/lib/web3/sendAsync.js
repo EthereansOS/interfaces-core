@@ -1,21 +1,41 @@
 import Web3 from 'web3'
 
-const instrumentedProviders = {}
+const instrumentedProviders = []
+
+const instrumentableMethods = ['eth_call', 'eth_getLogs']
+
+async function instrumentProvider(provider, method) {
+  if (instrumentableMethods.indexOf(method) === -1) {
+    return
+  }
+
+  var entry = instrumentedProviders.filter((it) => it.provider === provider)[0]
+
+  if (entry) {
+    return entry.instrumentedProvider
+  }
+
+  const chainId = parseInt(await sendAsync(provider, 'eth_chainId'))
+
+  instrumentedProviders.push(
+    (entry = {
+      chainId,
+      provider,
+      instrumentedProvider: provider,
+    })
+  )
+
+  const { chainProvider } = sendAsync.context || {
+    chainProvider: {},
+  }
+  entry.instrumentedProvider =
+    chainId !== 1 && chainProvider[chainId]
+      ? new Web3.providers.HttpProvider(chainProvider[chainId])
+      : provider
+}
 
 async function sendAsync(inputProvider, method) {
-  var provider = inputProvider
-  if (method !== 'eth_chainId') {
-    const chainId = parseInt(await sendAsync(provider, 'eth_chainId'))
-    const { chainProvider } = sendAsync.context || {
-      chainProvider: {},
-    }
-    provider =
-      chainId !== 1 && chainProvider[chainId]
-        ? (instrumentedProviders[chainId] =
-            instrumentedProviders[chainId] ||
-            new Web3.providers.HttpProvider(chainProvider[chainId]))
-        : provider
-  }
+  var provider = await instrumentProvider(inputProvider)
   var params = [...arguments].slice(2) || []
   return await new Promise(async function (ok, ko) {
     try {
