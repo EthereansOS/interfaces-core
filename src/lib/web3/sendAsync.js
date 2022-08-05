@@ -7,15 +7,14 @@ const defaultInstrumentableMethods = [
 ]
 
 async function instrumentProvider(provider, method) {
-  var instrumentableMethods = []
+  var instrumentableMethods = [...defaultInstrumentableMethods]
 
   try {
-    instrumentableMethods.push(
-      ...(sendAsync.context.providerInstrumentableMethods || [])
-    )
+    instrumentableMethods = [
+      ...(sendAsync.context.providerInstrumentableMethods || []),
+    ]
   } catch (e) {}
 
-  instrumentableMethods.push(...defaultInstrumentableMethods)
   instrumentableMethods = instrumentableMethods
     .map((it) => it.toLowerCase())
     .filter((it, i, arr) => arr.indexOf(it) === i)
