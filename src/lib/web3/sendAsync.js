@@ -11,7 +11,8 @@ async function instrumentProvider(provider, method) {
 
   try {
     instrumentableMethods = [
-      ...(sendAsync.context.providerInstrumentableMethods || []),
+      ...(sendAsync.context.providerInstrumentableMethods ||
+        defaultInstrumentableMethods),
     ]
   } catch (e) {}
 
