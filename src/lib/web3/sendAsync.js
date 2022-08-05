@@ -2,9 +2,18 @@ import Web3 from 'web3'
 
 const instrumentedProviders = []
 
-const instrumentableMethods = ['eth_call', 'eth_getLogs']
+const defaultInstrumentableMethods = [
+  'eth_call',
+  'eth_getLogs',
+  'eth_estimateGas',
+]
 
 async function instrumentProvider(provider, method) {
+  var instrumentableMethods = defaultInstrumentableMethods
+  try {
+    instrumentableMethods = sendAsync.context.providerInstrumentableMethods
+  } catch (e) {}
+
   if (instrumentableMethods.indexOf(method) === -1) {
     return provider
   }
