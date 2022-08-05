@@ -1,7 +1,5 @@
 import Web3 from 'web3'
 
-const instrumentedProviders = []
-
 const defaultInstrumentableMethods = [
   'eth_call',
   'eth_getLogs',
@@ -10,10 +8,11 @@ const defaultInstrumentableMethods = [
 
 async function instrumentProvider(provider, method) {
   var instrumentableMethods = []
+
   try {
-    instrumentableMethods = [
-      ...(sendAsync.context.providerInstrumentableMethods || []),
-    ]
+    instrumentableMethods.push(
+      ...(sendAsync.context.providerInstrumentableMethods || [])
+    )
   } catch (e) {}
 
   instrumentableMethods.push(...defaultInstrumentableMethods)
@@ -25,7 +24,9 @@ async function instrumentProvider(provider, method) {
     return provider
   }
 
-  var entry = instrumentedProviders.filter((it) => it.provider === provider)[0]
+  var entry = sendAsync.instrumentedProviders.filter(
+    (it) => it.provider === provider
+  )[0]
 
   if (entry) {
     return entry.instrumentedProvider
@@ -33,13 +34,13 @@ async function instrumentProvider(provider, method) {
 
   const chainId = parseInt(await sendAsync(provider, 'eth_chainId'))
 
-  instrumentedProviders.push(
-    (entry = {
-      chainId,
-      provider,
-      instrumentedProvider: provider,
-    })
-  )
+  entry = {
+    chainId,
+    provider,
+    instrumentedProvider: provider,
+  }
+
+  sendAsync.instrumentedProviders.push(entry)
 
   const { chainProvider } = sendAsync.context || {
     chainProvider: {},
@@ -74,5 +75,7 @@ async function sendAsync(inputProvider, method) {
     }
   })
 }
+
+sendAsync.instrumentedProviders = []
 
 export default sendAsync
