@@ -61,14 +61,13 @@ export default async function tryRetrieveMetadata(
           item.id
         )
       : await blockchainCall((item.mainInterface || item.contract).methods.uri)
-    item.id &&
-      (item.metadataLink = decodeURI(item.metadataLink))(
-        (item.metadataLink = item.metadataLink.split('{id}').join(item.id))
-      )(
-        (item.metadataLink = item.metadataLink
-          .split('0x{id}')
-          .join(web3Utils.numberToHex(item.id)))
-      )
+    if (item.id) {
+      item.metadataLink = decodeURI(item.metadataLink)
+      item.metadataLink = item.metadataLink.split('{id}').join(item.id)
+      item.metadataLink = item.metadataLink
+        .split('0x{id}')
+        .join(web3Utils.numberToHex(item.id))
+    }
     item.metadataLink =
       (metadatas && metadatas[item.address]) || item.metadataLink
     if (item.metadataLink !== '') {
