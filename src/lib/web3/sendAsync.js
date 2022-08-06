@@ -51,9 +51,7 @@ async function instrumentProvider(provider, method) {
       : provider)
 }
 
-async function sendAsync(inputProvider, method) {
-  var provider = await instrumentProvider(inputProvider, method)
-  var params = [...arguments].slice(2) || []
+async function sendAsyncInternal(provider, method, params) {
   return await new Promise(async function (ok, ko) {
     try {
       await (provider.sendAsync || provider.send).call(
@@ -74,6 +72,20 @@ async function sendAsync(inputProvider, method) {
       return ko(e)
     }
   })
+}
+
+async function sendAsync(provider, method) {
+  var params = [...arguments].slice(2) || []
+
+  try {
+    return await sendAsyncInternal(provider, method, params)
+  } catch (e) {
+    var instrumentedProvider = await instrumentProvider(provider, method)
+    if (provider === instrumentedProvider) {
+      throw e
+    }
+    return await sendAsyncInternal(instrumentedProvider, method, params)
+  }
 }
 
 sendAsync.instrumentedProviders = []
