@@ -24,7 +24,7 @@ export const useWeb3 = () => useContext(Web3Context)
 export const Web3ContextProvider = (props) => {
   const context = useEthosContext()
 
-  sendAsync.context = sendAsync.context || context
+  sendAsync.context = sendAsync.context || { ...context }
 
   const connectors = context.useWalletSettings.reduce(
     (acc, connector) => ({

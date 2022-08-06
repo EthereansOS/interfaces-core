@@ -1,10 +1,6 @@
 import Web3 from 'web3'
 
-const defaultInstrumentableMethods = [
-  'eth_call',
-  'eth_getLogs',
-  'eth_estimateGas',
-]
+const defaultInstrumentableMethods = ['eth_getLogs']
 
 async function instrumentProvider(provider, method) {
   var instrumentableMethods = [...defaultInstrumentableMethods]
@@ -24,7 +20,8 @@ async function instrumentProvider(provider, method) {
     return provider
   }
 
-  var entry = sendAsync.instrumentedProviders.filter(
+  var entry = (sendAsync.instrumentedProviders =
+    sendAsync.instrumentedProviders || []).filter(
     (it) => it.provider === provider
   )[0]
 
@@ -40,7 +37,10 @@ async function instrumentProvider(provider, method) {
     instrumentedProvider: provider,
   }
 
-  sendAsync.instrumentedProviders.push(entry)
+  sendAsync.instrumentedProviders = [
+    ...(sendAsync.instrumentProvider || []),
+    entry,
+  ]
 
   const { chainProvider } = sendAsync.context || {
     chainProvider: {},
@@ -76,22 +76,27 @@ async function sendAsyncInternal(provider, method, params) {
 
 async function sendAsync(provider, method) {
   var params = [...arguments].slice(2) || []
-
-  try {
-    return await sendAsyncInternal(provider, method, params)
-  } catch (e) {
-    var message = (e.stack || e.message || e.toString()).toLowerCase()
-    if (message.indexOf('execution reverted') !== -1) {
-      throw e
+  while (true) {
+    try {
+      return await sendAsyncInternal(provider, method, params)
+    } catch (e) {
+      var message = (e.stack || e.message || e.toString()).toLowerCase()
+      if (
+        message.indexOf('execution reverted') !== -1 ||
+        message.indexOf('zero result') !== -1
+      ) {
+        throw e
+      }
+      if (message.indexOf('429') !== -1) {
+        var instrumentedProvider = await instrumentProvider(provider, method)
+        if (provider === instrumentedProvider) {
+          throw e
+        }
+        return await sendAsyncInternal(instrumentedProvider, method, params)
+      }
+      await new Promise((ok) => setTimeout(ok, 700))
     }
-    var instrumentedProvider = await instrumentProvider(provider, method)
-    if (provider === instrumentedProvider) {
-      throw e
-    }
-    return await sendAsyncInternal(instrumentedProvider, method, params)
   }
 }
-
-sendAsync.instrumentedProviders = []
 
 export default sendAsync
