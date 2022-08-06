@@ -1,5 +1,6 @@
 import { toChecksumAddress } from 'web3-utils'
 import { Base64 } from 'js-base64'
+import web3Utils from 'web3-utils'
 
 import blockchainCall from '../web3/blockchainCall'
 
@@ -61,7 +62,13 @@ export default async function tryRetrieveMetadata(
         )
       : await blockchainCall((item.mainInterface || item.contract).methods.uri)
     item.id &&
-      (item.metadataLink = item.metadataLink.split('0x{id}').join(item.id))
+      (item.metadataLink = decodeURI(item.metadataLink))(
+        (item.metadataLink = item.metadataLink.split('{id}').join(item.id))
+      )(
+        (item.metadataLink = item.metadataLink
+          .split('0x{id}')
+          .join(web3Utils.numberToHex(item.id)))
+      )
     item.metadataLink =
       (metadatas && metadatas[item.address]) || item.metadataLink
     if (item.metadataLink !== '') {
