@@ -80,6 +80,10 @@ async function sendAsync(provider, method) {
   try {
     return await sendAsyncInternal(provider, method, params)
   } catch (e) {
+    var message = (e.stack || e.message || e.toString()).toLowerCase()
+    if (message.indexOf('execution reverted') !== -1) {
+      throw e
+    }
     var instrumentedProvider = await instrumentProvider(provider, method)
     if (provider === instrumentedProvider) {
       throw e
