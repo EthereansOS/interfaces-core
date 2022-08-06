@@ -70,6 +70,7 @@ export default async function tryRetrieveMetadata(
     }
     item.metadataLink =
       (metadatas && metadatas[item.address]) || item.metadataLink
+    item.uri = item.metadataLink
     if (item.metadataLink !== '') {
       item.image = cleanLink(formatLink({ context }, item.metadataLink))
       try {
