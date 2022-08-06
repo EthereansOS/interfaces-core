@@ -87,7 +87,7 @@ async function sendAsync(provider, method) {
       ) {
         throw e
       }
-      if (message.indexOf('429') !== -1) {
+      if (message.indexOf('429') === -1) {
         var instrumentedProvider = await instrumentProvider(provider, method)
         if (provider === instrumentedProvider) {
           throw e
