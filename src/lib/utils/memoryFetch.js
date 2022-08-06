@@ -1,5 +1,7 @@
 import web3Utils from 'web3-utils'
 
+import cache from './cache'
+
 export default async function memoryFetch(url, type) {
   var element
 
@@ -12,7 +14,7 @@ export default async function memoryFetch(url, type) {
   var key = web3Utils.sha3(url)
 
   try {
-    element = JSON.parse(window.localStorage.getItem(key))
+    element = JSON.parse(await cache.getItem(key))
   } catch (e) {}
   if (element) {
     return element
@@ -22,7 +24,7 @@ export default async function memoryFetch(url, type) {
   element = await element[type || 'json']()
 
   try {
-    window.localStorage.setItem(key, JSON.stringify(element))
+    await cache.setItem(key, JSON.stringify(element))
   } catch (e) {}
   return element
 }
