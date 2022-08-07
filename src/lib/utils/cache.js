@@ -88,7 +88,7 @@ function getItem(key) {
 
     const query = index.get(key)
 
-    query.onsuccess = (event) => ok(event.target?.result?.value || 'null')
+    query.onsuccess = (event) => ok(event.target?.result || 'null')
 
     query.onerror = (event) => ko(event.target.error || event.target.errorCode)
 
