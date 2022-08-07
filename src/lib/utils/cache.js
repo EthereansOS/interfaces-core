@@ -45,7 +45,8 @@ function closeDB(db) {
     if (!request) {
       return ok()
     }
-    request.onerror = (event) => ko(event.target.errorCode)
+    request.onerror = (event) =>
+      ko(event.target.error || event.target.errorCode)
     request.onsuccess = (event) => ok(event.target.result)
   })
 }
@@ -58,17 +59,16 @@ function setItem(key, value) {
 
     const store = txn.objectStore(dbTable)
 
-    const query = store.put({
-      key,
-      value:
-        value && (typeof value).toLowerCase() === 'string'
-          ? value
-          : JSON.stringify(value || null),
-    })
+    const query = store.put(
+      value && (typeof value).toLowerCase() === 'string'
+        ? value
+        : JSON.stringify(value || null),
+      key
+    )
 
     query.onsuccess = (event) => ok(event.target.result)
 
-    query.onerror = (event) => ko(event.target.errorCode)
+    query.onerror = (event) => ko(event.target.error || event.target.errorCode)
 
     txn.oncomplete = async function () {
       //await closeDB(db)
@@ -90,7 +90,7 @@ function getItem(key) {
 
     query.onsuccess = (event) => ok(event.target?.result?.value || 'null')
 
-    query.onerror = (event) => ko(event.target.errorCode)
+    query.onerror = (event) => ko(event.target.error || event.target.errorCode)
 
     txn.oncomplete = async function () {
       //await closeDB(db)
