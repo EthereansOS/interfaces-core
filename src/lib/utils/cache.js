@@ -15,11 +15,16 @@ const dbName = 'ethereansos'
 const dbTable = 'ethereansos'
 const dbVersion = 1
 
+var internalDB
+
 function openDB(name, version) {
   return new Promise((ok, ko) => {
+    if (internalDB) {
+      return ok(internalDB)
+    }
     const request = dbEngine.open(name, version)
     request.onerror = (event) => ko(event.target.errorCode)
-    request.onsuccess = (event) => ok(event.target.result)
+    request.onsuccess = (event) => ok((internalDB = event.target.result))
     request.onupgradeneeded = (event) => {
       const store = event.target.result.createObjectStore(dbTable, {
         autoIncrement: true,
@@ -33,6 +38,9 @@ function openDB(name, version) {
 
 function closeDB(db) {
   return new Promise((ok, ko) => {
+    if (db === internalDB) {
+      internalDB = undefined
+    }
     const request = db.close()
     if (!request) {
       return ok()
@@ -63,7 +71,7 @@ function setItem(key, value) {
     query.onerror = (event) => ko(event.target.errorCode)
 
     txn.oncomplete = async function () {
-      await closeDB(db)
+      //await closeDB(db)
     }
   })
 }
@@ -85,7 +93,7 @@ function getItem(key) {
     query.onerror = (event) => ko(event.target.errorCode)
 
     txn.oncomplete = async function () {
-      await closeDB(db)
+      //await closeDB(db)
     }
   })
 }
