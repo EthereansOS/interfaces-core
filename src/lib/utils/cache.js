@@ -60,9 +60,13 @@ function setItem(key, value) {
     const store = txn.objectStore(dbTable)
 
     const query = store.put(
-      value && (typeof value).toLowerCase() === 'string'
-        ? value
-        : JSON.stringify(value || null),
+      {
+        key,
+        value:
+          value && (typeof value).toLowerCase() === 'string'
+            ? value
+            : JSON.stringify(value || null),
+      },
       key
     )
 
@@ -88,7 +92,7 @@ function getItem(key) {
 
     const query = index.get(key)
 
-    query.onsuccess = (event) => ok(event.target?.result || 'null')
+    query.onsuccess = (event) => ok(event.target?.result?.value || 'null')
 
     query.onerror = (event) => ko(event.target.error || event.target.errorCode)
 
