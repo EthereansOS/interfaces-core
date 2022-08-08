@@ -21,7 +21,7 @@ function cleanLink(linkToClean) {
   var split = cleanedLink.split('/ipfs/')
   var ipfsLink = split[split.length - 1]
 
-  cleanedLink = '//gateway.ipfs.io/ipfs/' + ipfsLink
+  cleanedLink = '//ipfs.io/ipfs/' + ipfsLink
 
   return cleanedLink
 }
