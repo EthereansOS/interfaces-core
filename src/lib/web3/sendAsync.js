@@ -83,7 +83,8 @@ async function sendAsync(provider, method) {
       var message = (e.stack || e.message || e.toString()).toLowerCase()
       if (
         message.indexOf('execution reverted') !== -1 ||
-        message.indexOf('zero result') !== -1
+        message.indexOf('zero result') !== -1 ||
+        method.indexOf('eth_send') !== -1
       ) {
         throw e
       }
