@@ -26,17 +26,21 @@ function openDB(name, version) {
     request.onerror = (event) => ko(event.target.errorCode)
     request.onsuccess = (event) => ok((internalDB = event.target.result))
     request.onupgradeneeded = (event) => {
-      const store = event.target.result.createObjectStore(dbTable, {
-        autoIncrement: true,
-      })
-      const index = store.createIndex('key', 'key', {
-        unique: true,
-      })
+      event.target.result
+        .createObjectStore(dbTable, {
+          autoIncrement: true,
+        })
+        .createIndex('key', 'key', {
+          unique: true,
+        })
     }
   })
 }
 
 function closeDB(db) {
+  if (!db) {
+    return
+  }
   return new Promise((ok, ko) => {
     if (db === internalDB) {
       internalDB = undefined
@@ -52,6 +56,9 @@ function closeDB(db) {
 }
 
 function setItem(key, value) {
+  if (window.ganache) {
+    return
+  }
   return new Promise(async (ok, ko) => {
     const db = await openDB(dbName, dbVersion)
 
@@ -73,10 +80,6 @@ function setItem(key, value) {
     query.onsuccess = (event) => ok(event.target.result)
 
     query.onerror = (event) => ko(event.target.error || event.target.errorCode)
-
-    txn.oncomplete = async function () {
-      //await closeDB(db)
-    }
   })
 }
 
@@ -95,14 +98,19 @@ function getItem(key) {
     query.onsuccess = (event) => ok(event.target?.result?.value || 'null')
 
     query.onerror = (event) => ko(event.target.error || event.target.errorCode)
-
-    txn.oncomplete = async function () {
-      //await closeDB(db)
-    }
   })
 }
 
-async function clear(key) {}
+async function clear() {
+  await closeDB()
+  internalDB = undefined
+  return await new Promise((ok, ko) => {
+    const request = dbEngine.deleteDatabase(dbName)
+    request.onsuccess = (event) => ok(event?.target?.result)
+    request.onerror = (event) =>
+      ko(event.target.error || event.target.errorCode)
+  })
+}
 
 export default window.ethereansOSCache = {
   getItem,
