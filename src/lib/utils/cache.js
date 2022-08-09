@@ -102,7 +102,7 @@ function getItem(key) {
 }
 
 async function clear() {
-  await closeDB()
+  await closeDB(internalDB)
   internalDB = undefined
   return await new Promise((ok, ko) => {
     const request = dbEngine.deleteDatabase(dbName)
