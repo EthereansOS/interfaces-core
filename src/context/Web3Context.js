@@ -46,6 +46,17 @@ export const Web3ContextProvider = (props) => {
   )
 }
 
+function initializeIPFSClient(context) {
+  var options = {
+    ...context.infuraIPFSOptions,
+    headers: {
+      authorization: 'Basic ' + context.infuraAPIKey,
+    },
+  }
+  var client = createIpfsHttpClient(options)
+  return client
+}
+
 const Web3ContextInitializer = ({
   children,
   blockInterval,
@@ -58,7 +69,7 @@ const Web3ContextInitializer = ({
   const context = useEthosContext()
 
   const [ipfsHttpClient, setIpfsHttpClient] = useState(
-    createIpfsHttpClient(context.ipfsHost)
+    initializeIPFSClient(context)
   )
 
   const wallet = useWallet()
@@ -78,7 +89,7 @@ const Web3ContextInitializer = ({
   const [dualChainWeb3, setDualChainWeb3] = useState(null)
 
   useEffect(() => {
-    setIpfsHttpClient(createIpfsHttpClient(context.ipfsHost))
+    setIpfsHttpClient(initializeIPFSClient(context))
   }, [context])
 
   const tryUpdateBlock = useCallback(
