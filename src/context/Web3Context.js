@@ -103,7 +103,7 @@ const Web3ContextInitializer = ({
 
   const tryUpdateDualChainBlock = useCallback(
     async (provider, oldValue, setter, force) => {
-      if (provider) {
+      if (!provider) {
         return setter(0)
       }
       try {
