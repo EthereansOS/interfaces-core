@@ -102,19 +102,15 @@ const Web3ContextInitializer = ({
   )
 
   const tryUpdateDualChainBlock = useCallback(
-    async (web3, oldValue, setter, force) => {
-      if (!web3?.currentProvider) {
+    async (provider, oldValue, setter, force) => {
+      if (provider) {
         return setter(0)
       }
       try {
-        var currentBlockNumber = await sendAsync(
-          web3.currentProvider,
-          'eth_call',
-          {
-            to: '0x4200000000000000000000000000000000000013',
-            data: web3Utils.sha3('getL1BlockNumber()').substring(0, 10),
-          }
-        )
+        var currentBlockNumber = await sendAsync(provider, 'eth_call', {
+          to: '0x4200000000000000000000000000000000000013',
+          data: web3Utils.sha3('getL1BlockNumber()').substring(0, 10),
+        })
         currentBlockNumber = abi
           .decode(['uint256'], currentBlockNumber)[0]
           .toString()
