@@ -1,4 +1,10 @@
-import React, { useContext, useState, useEffect, useCallback } from 'react'
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react'
 import T from 'prop-types'
 import { create as createIpfsHttpClient } from 'ipfs-http-client'
 import { UseWalletProvider, useWallet } from 'use-wallet'
@@ -68,9 +74,7 @@ const Web3ContextInitializer = ({
 
   const context = useEthosContext()
 
-  const [ipfsHttpClient, setIpfsHttpClient] = useState(
-    initializeIPFSClient(context)
-  )
+  const ipfsHttpClient = useMemo(() => initializeIPFSClient(context), [context])
 
   const wallet = useWallet()
   const [connectionStatus, setConnectionStatus] = useState(NOT_CONNECTED)
@@ -87,10 +91,6 @@ const Web3ContextInitializer = ({
   const [dualChainId, setDualChainId] = useState(null)
   const [dualBlock, setDualBlock] = useState(0)
   const [dualChainWeb3, setDualChainWeb3] = useState(null)
-
-  useEffect(() => {
-    setIpfsHttpClient(initializeIPFSClient(context))
-  }, [context])
 
   const tryUpdateBlock = useCallback(
     async (provider, oldValue, setter, force) => {
