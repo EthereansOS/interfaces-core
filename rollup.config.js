@@ -13,12 +13,12 @@ export default {
   input: './src/index.js',
   output: [
     {
-      sourcemap: true,
+      sourcemap: 'inline',
       file: pkg.main,
       format: 'cjs',
     },
     {
-      sourcemap: true,
+      sourcemap: 'inline',
       file: pkg.module,
       format: 'esm',
     },
