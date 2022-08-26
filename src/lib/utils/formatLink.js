@@ -12,6 +12,9 @@ export default function formatLink({ context }, link) {
   if (link.endsWith('.eth')) {
     link += '.link'
   }
+  if (link.indexOf('data') === 0) {
+    return link
+  }
   return (!link ? '' : link.indexOf('http') === -1 ? 'https://' + link : link)
     .split('https:')
     .join('')
