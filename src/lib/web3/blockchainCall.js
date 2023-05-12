@@ -29,11 +29,13 @@ async function blockchainCall() {
       from = method._parent.currentProvider.accounts[0]
     } catch (e) {
       try {
-        from = (
-          await method._parent.currentProvider.request({
-            method: 'eth_requestAccounts',
-          })
-        )[0]
+        from =
+          window.account ||
+          (
+            await method._parent.currentProvider.request({
+              method: 'eth_requestAccounts',
+            })
+          )[0]
       } catch (e) {
         var data = args[args.length - 1]
         if (data) {
