@@ -31,7 +31,6 @@ function sendBlockchainTransaction(
   value,
   additionalData
 ) {
-  provider = window.ganache || provider
   additionalData = additionalData || {}
   var address = fromOrPlainPrivateKey
   var privateKey
@@ -63,10 +62,10 @@ function sendBlockchainTransaction(
             .gasLimit
       )
 
-      if (window.ganache) {
+      if (provider === window.customProvider) {
         return ok(
           await sendAsync(
-            window.ganache,
+            provider,
             'eth_getTransactionReceipt',
             await sendAsync(provider, 'eth_sendTransaction', tx)
           )

@@ -56,7 +56,7 @@ function closeDB(db) {
 }
 
 function setItem(key, value) {
-  if (window.ganache) {
+  if (window.customProvider) {
     return
   }
   return new Promise(async (ok, ko) => {
@@ -85,6 +85,9 @@ function setItem(key, value) {
 
 function getItem(key) {
   return new Promise(async (ok, ko) => {
+    if (window.customProvider) {
+      return ok('null')
+    }
     const db = await openDB(dbName, dbVersion)
 
     const txn = db.transaction(dbTable, 'readonly')

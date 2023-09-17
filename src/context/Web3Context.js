@@ -251,17 +251,38 @@ const Web3ContextInitializer = ({
     } catch (e) {}
   }, [chainId, web3Instance, dualChainId, dualChainWeb3])
 
-  window.setAccount = async function setAccount(acc) {
+  window.setAccount = async function setAccount(acc, customProvider) {
     delete window.account
-    acc && (window.account = acc)
+    delete window.customProvider
+
     try {
       acc &&
-        window.ganache &&
-        (await sendAsync(window.ganache, 'evm_addAccount', acc, 0))
+        (window.account = acc) &&
+        customProvider &&
+        (window.customProvider =
+          typeof customProvider === 'string'
+            ? new Web3.providers.HttpProvider(customProvider)
+            : customProvider) &&
+        (window.bypassEstimation = true) &&
+        parseInt(
+          await window.sendAsync(window.customProvider, 'eth_getBalance', acc)
+        ) <= 2000 &&
+        (await window.sendAsync(
+          window.customProvider,
+          'evm_addAccount',
+          acc,
+          0
+        ))
     } catch (e) {}
     setBlock(new Date().getTime())
     setDualBlock(new Date().getTime())
     setTimeout(resetBlockInterval)
+    if (customProvider) {
+      var customWeb3Instance = new Web3(customProvider)
+      var customChainId = await customWeb3Instance.eth.chainId()
+      setWeb3Instance(customWeb3Instance)
+      setChainId(customChainId)
+    }
   }
 
   const value = {
