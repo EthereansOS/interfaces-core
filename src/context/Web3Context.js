@@ -179,7 +179,9 @@ const Web3ContextInitializer = ({
     setWeb3Instance(
       (wallet &&
         wallet.ethereum &&
-        (web3Instance || new Web3(wallet.ethereum))) ||
+        (window.customProvider
+          ? new Web3(window.customProvider)
+          : web3Instance || new Web3(wallet.ethereum))) ||
         null
     )
   }, [wallet])
@@ -279,7 +281,7 @@ const Web3ContextInitializer = ({
     setTimeout(resetBlockInterval)
     if (customProvider) {
       var customWeb3Instance = new Web3(customProvider)
-      var customChainId = await customWeb3Instance.eth.chainId()
+      var customChainId = await customWeb3Instance.eth.getChainId()
       setWeb3Instance(customWeb3Instance)
       setChainId(customChainId)
     }
