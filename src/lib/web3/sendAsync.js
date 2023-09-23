@@ -54,7 +54,7 @@ async function instrumentProvider(provider, method) {
 async function sendAsyncInternal(provider, method, params) {
   return await new Promise(async function (ok, ko) {
     try {
-      await (provider.sendAsync || provider.send).call(
+      await (provider.sendAsync || provider.send || provider.request).call(
         provider,
         {
           jsonrpc: '2.0',
@@ -74,8 +74,7 @@ async function sendAsyncInternal(provider, method, params) {
   })
 }
 
-async function sendAsync(provider, method) {
-  var params = [...arguments].slice(2) || []
+async function _sendAsync(provider, method, params) {
   while (true) {
     try {
       return await sendAsyncInternal(provider, method, params)
@@ -93,11 +92,16 @@ async function sendAsync(provider, method) {
         if (provider === instrumentedProvider) {
           throw e
         }
-        return await sendAsyncInternal(instrumentedProvider, method, params)
+        return await _sendAsync(instrumentedProvider, method, params)
       }
       await new Promise((ok) => setTimeout(ok, 700))
     }
   }
+}
+
+function sendAsync(provider, method) {
+  var params = [...arguments].slice(2) || []
+  return _sendAsync(provider, method, params)
 }
 
 export default sendAsync

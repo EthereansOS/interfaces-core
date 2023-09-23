@@ -101,7 +101,17 @@ export default async function getLogs(provider, args) {
   }
 
   for (var range of ranges) {
-    var start = range[0]
+    logs.push(
+      sendAsync(provider, 'eth_getLogs', {
+        ...args,
+        fromBlock: toHex(range[0]),
+        toBlock: toHex(range[1]),
+      }).catch((e) => {
+        console.log(e)
+        return []
+      })
+    )
+    /*var start = range[0]
     var end = start + interval
     end = end > range[1] ? range[1] : end
 
@@ -130,7 +140,7 @@ export default async function getLogs(provider, args) {
       start = end
       end = start + interval
       end = end > range[1] ? range[1] : end
-    }
+    }*/
   }
 
   logs = await Promise.all(logs)
